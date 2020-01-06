@@ -11,4 +11,48 @@ package frc.robot.auto;
  * Add your docs here.
  */
 public class AutoStateMachine {
+    private static AutoStateMachine mInstance = null;
+
+    // ************ AUTO MODES ***************
+
+    // ************* STATES ******************
+
+    private byte currentState;
+    private byte currentStateIndex = 0;
+    private byte[] nextStateArray = new byte[255];
+
+    private boolean mStop = false;
+
+    public static AutoStateMachine getInstance() {
+        if (mInstance == null) {
+            mInstance = new AutoStateMachine();
+        }
+        return mInstance;
+    }
+
+    public void init(byte selection) {
+
+    }
+
+    public void buildAuto(byte mode) {
+        byte stateCounter = 0;
+    }
+
+    public void setCurrentState(byte state) {
+
+    }
+
+    public void autonomousEnabledLoop() {
+
+    }
+
+    private boolean infLoopChecker() {
+        
+        return mStop;
+    }
+
+    // **************************************
+    // *********** AUTO ACTIONS *************
+    // **************************************
+    
 }
