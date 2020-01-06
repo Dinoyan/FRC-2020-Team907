@@ -7,12 +7,22 @@
 
 package frc.robot.subsystem;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+
+import frc.robot.Constants;
+
 /**
  * Add your docs here.
  */
 public class Shooter extends Subsystem {
 
     private static Shooter mInstance = null;
+
+    private TalonSRX mShooterMaster;
+    private TalonSRX mShooterSlave;
+
 
     public static Shooter getInstance() {
         if (mInstance == null) {
@@ -24,13 +34,20 @@ public class Shooter extends Subsystem {
     @Override
     public void init() {
         // TODO Auto-generated method stub
+        mShooterMaster = new TalonSRX(Constants.SHOOTER_CAN[0]);
+        mShooterSlave = new TalonSRX(Constants.SHOOTER_CAN[1]);
 
+        mShooterMaster.configFactoryDefault();
+        mShooterSlave.configFactoryDefault();
+
+        mShooterMaster.setNeutralMode(NeutralMode.Coast);
+        mShooterSlave.setNeutralMode(NeutralMode.Coast);
     }
 
     @Override
     public void zeroSensors() {
-        // TODO Auto-generated method stub
-
+        mShooterMaster.set(ControlMode.PercentOutput, 0);
+        mShooterSlave.set(ControlMode.PercentOutput, 0);
     }
 
     @Override
@@ -42,7 +59,7 @@ public class Shooter extends Subsystem {
     @Override
     public Boolean checkSystem() {
         // TODO Auto-generated method stub
-        return null;
+        return true;
     }
 
     @Override
@@ -52,10 +69,17 @@ public class Shooter extends Subsystem {
     }
 
     public void shootCell(double speed) {
-
+        mShooterMaster.set(ControlMode.PercentOutput, speed);
+        mShooterSlave.set(ControlMode.PercentOutput, speed);
     }
 
     public void vomitCell(double speed) {
-        
+        mShooterMaster.set(ControlMode.PercentOutput, -speed);
+        mShooterSlave.set(ControlMode.PercentOutput, -speed);
     }
+
+    public void getShooterSpeed() {
+
+    }
+
 }
