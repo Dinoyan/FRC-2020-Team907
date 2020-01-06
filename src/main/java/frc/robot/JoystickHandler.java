@@ -7,8 +7,37 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.Joystick;
+
 /**
  * Add your docs here.
  */
 public class JoystickHandler {
+
+    private static JoystickHandler mInstance = null;
+
+    private Joystick mDriveStick;
+    private Joystick mShootStick;
+
+    public static JoystickHandler getInstance() {
+        if (mInstance == null) {
+            mInstance = new JoystickHandler();
+        }
+        return mInstance;
+    }
+
+    public JoystickHandler() {
+        mDriveStick = new Joystick(Constants.DRIVE_STICK);
+        mShootStick = new Joystick(Constants.SHOOT_STICK);
+    }
+
+    public Joystick getDriveStick() {
+        return mDriveStick;
+    }
+
+    public Joystick getShootStick() {
+        return mShootStick;
+    }
+
+
 }
