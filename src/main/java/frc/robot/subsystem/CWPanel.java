@@ -7,12 +7,31 @@
 
 package frc.robot.subsystem;
 
+import com.revrobotics.ColorMatch;
+import com.revrobotics.ColorMatchResult;
+import com.revrobotics.ColorSensorV3;
+
+import edu.wpi.first.wpilibj.I2C;
+import edu.wpi.first.wpilibj.util.Color;
+
 /**
  * Add your docs here.
  */
 public class CWPanel extends Subsystem {
 
     private static CWPanel mInstance = null;
+
+    private char mDColour = '?';
+
+    private final I2C.Port i2cPort = I2C.Port.kOnboard;
+    private final ColorSensorV3 mColourSensor = new ColorSensorV3(i2cPort);
+    
+  private final ColorMatch mcolourMatcher = new ColorMatch();
+
+    private final Color kBlueTarget = ColorMatch.makeColor(0.143, 0.427, 0.429);
+    private final Color kGreenTarget = ColorMatch.makeColor(0.197, 0.561, 0.240);
+    private final Color kRedTarget = ColorMatch.makeColor(0.561, 0.232, 0.114);
+    private final Color kYellowTarget = ColorMatch.makeColor(0.361, 0.524, 0.113);
 
     public static CWPanel getInstance() {
         if (mInstance == null) {
@@ -24,7 +43,11 @@ public class CWPanel extends Subsystem {
     @Override
     public void init() {
         // TODO Auto-generated method stub
-
+        mcolourMatcher.addColorMatch(kBlueTarget);
+        mcolourMatcher.addColorMatch(kGreenTarget);
+        mcolourMatcher.addColorMatch(kRedTarget);
+        mcolourMatcher.addColorMatch(kYellowTarget); 
+        
     }
 
     @Override
@@ -60,6 +83,16 @@ public class CWPanel extends Subsystem {
     }
 
     public void getWheelEnc() {
-        
+
+    }
+
+    public char getDetectedColour() {
+        Color detectedColor = mColourSensor.getColor();
+        ColorMatchResult match = mcolourMatcher.matchClosestColor(detectedColor);
+
+        if (match.color == kBlueTarget) {
+            mDColour = 'B';
+        }
+        return mDColour;
     }
 }
