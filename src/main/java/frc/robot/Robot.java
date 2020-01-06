@@ -13,6 +13,7 @@ import frc.robot.subsystem.Drivetrain;
 import frc.robot.subsystem.Hook;
 import frc.robot.subsystem.Intake;
 import frc.robot.subsystem.Shooter;
+import frc.robot.util.CrashTracker;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -52,23 +53,29 @@ public class Robot extends TimedRobot {
       mCWPanel
     );
 
+    CrashTracker.logRobotInit();
   }
 
   @Override
   public void autonomousInit() {
     mSubsystemManager.zeroAll();
     mSubsystemManager.outPutDashboard();
+
+    CrashTracker.logAutoInit();
   }
 
   @Override
   public void autonomousPeriodic() {
     mSubsystemManager.outPutDashboard();
+
   }
 
   @Override
   public void teleopInit() {
     mSubsystemManager.zeroAll();
     mSubsystemManager.outPutDashboard();
+
+    CrashTracker.logTeleopInit();
   }
 
   @Override
