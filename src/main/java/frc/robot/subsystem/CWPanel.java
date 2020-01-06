@@ -86,6 +86,10 @@ public class CWPanel extends Subsystem {
 
     }
 
+    public void manualControl(double speed) {
+
+    }
+
     public char getDetectedColour() {
         Color detectedColor = mColourSensor.getColor();
         ColorMatchResult match = mcolourMatcher.matchClosestColor(detectedColor);
