@@ -50,4 +50,20 @@ public class Hook extends Subsystem {
         // TODO Auto-generated method stub
 
     }
+
+    public void pullUp() {
+
+    }
+
+    public void releaseDown() {
+
+    }
+
+    public void switchModeBrake() {
+
+    }
+
+    public void switchModeCoast() {
+        
+    }
 }
