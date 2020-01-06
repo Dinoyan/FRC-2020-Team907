@@ -18,22 +18,19 @@ public class Constants {
     
 
     // ********************* HOOK **************************
-
-
+    public final static int HOOK_CAN = 4;
 
 
     // ******************** SHOOTER ************************
-
-
+    public final static int[] SHOOTER_CAN = {5, 6};
 
 
     // ******************* CW PANEL ************************
-
-
+    public final static int CW_CAN = 7;
 
 
     // ******************** INTAKE *************************
-
+    
 
     // ****************** JOYSTICKS ************************
     public final static int DRIVE_STICK = 0;
