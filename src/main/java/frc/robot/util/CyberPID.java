@@ -104,7 +104,6 @@ public class CyberPID {
 
         this.mOutput = this.kP * mError + this.kI * mIntegral +  this.kD *mDerivative;
         
-        
         if (mOutput < -1) {
             mOutput = -1;
         } else if (mOutput > 1) {
