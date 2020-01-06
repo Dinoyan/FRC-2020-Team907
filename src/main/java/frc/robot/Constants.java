@@ -11,4 +11,38 @@ package frc.robot;
  * Add your docs here.
  */
 public class Constants {
+
+    // ****************** DRIVETRAIN ***********************
+    public final static int[] DRIVE_RIGHT = {0, 1};
+    public final static int[] DRIVE_LEFT = {2, 3};
+    
+
+    // ********************* HOOK **************************
+
+
+
+
+    // ******************** SHOOTER ************************
+
+
+
+
+    // ******************* CW PANEL ************************
+
+
+
+
+    // ******************** INTAKE *************************
+
+
+    // ****************** JOYSTICKS ************************
+    public final static int DRIVE_STICK = 0;
+    public final static int SHOOT_STICK = 1;
+
+
+    // ********************* PID ***************************
+
+
+
+
 }
