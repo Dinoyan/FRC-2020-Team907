@@ -50,4 +50,12 @@ public class Intake extends Subsystem{
         // TODO Auto-generated method stub
 
     }
+
+    public void intakeCell(double speed) {
+
+    }
+
+    public void ejectCell(double speed) {
+
+    }
 }

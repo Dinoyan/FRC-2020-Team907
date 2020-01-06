@@ -50,4 +50,16 @@ public class CWPanel extends Subsystem {
         // TODO Auto-generated method stub
 
     }
+
+    public void rotate() {
+
+    }
+
+    public void posToColour(char colour) {
+
+    }
+
+    public void getWheelEnc() {
+        
+    }
 }

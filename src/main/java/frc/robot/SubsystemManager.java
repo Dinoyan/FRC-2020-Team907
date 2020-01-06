@@ -28,11 +28,11 @@ public class SubsystemManager {
     }
 
     public void outPutDashboard() {
-
+        mAllSubsystem.forEach(Subsystem::updateDashboard);
     }
 
     public void stop() {
-
+        mAllSubsystem.forEach(Subsystem::stop);
     }
 
     public void zeroAll() {

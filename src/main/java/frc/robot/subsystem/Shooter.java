@@ -50,4 +50,12 @@ public class Shooter extends Subsystem {
         // TODO Auto-generated method stub
 
     }
+
+    public void shootCell(double speed) {
+
+    }
+
+    public void vomitCell(double speed) {
+        
+    }
 }

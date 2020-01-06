@@ -14,6 +14,10 @@ public class Drivetrain extends Subsystem {
 
     private static Drivetrain mInstance = null;
 
+    private double mRightDistance = 0.0;
+    private double mLeftDistance = 0.0;
+    private double mAngle = 0.0;
+
     public static Drivetrain getInstance() {
         if (mInstance == null) {
             mInstance = new Drivetrain();
@@ -50,5 +54,29 @@ public class Drivetrain extends Subsystem {
     public void updateDashboard() {
         // TODO Auto-generated method stub
 
+    }
+
+    public void drive(double left, double right) {
+
+    }
+
+    public double getRightDistance() {
+        return mRightDistance;
+    }
+
+    public double getLeftDistance() {
+        return mLeftDistance;
+    }
+
+    public double getAngle() {
+        return mAngle;
+    }
+
+    public void switchToBrake() {
+
+    }
+
+    public void switchToCoast() {
+        
     }
 }

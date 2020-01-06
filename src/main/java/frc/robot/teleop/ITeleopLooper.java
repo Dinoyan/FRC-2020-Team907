@@ -11,6 +11,8 @@ package frc.robot.teleop;
  * Add your docs here.
  */
 public class ITeleopLooper implements ITeleop {
+    
+    char mColour = '?';
 
     @Override
     public void init() {
@@ -28,5 +30,11 @@ public class ITeleopLooper implements ITeleop {
     public void superstructureEnabledLoop() {
         // TODO Auto-generated method stub
 
+    }
+
+    public char getFMSColour() {
+
+
+        return mColour;
     }
 }
