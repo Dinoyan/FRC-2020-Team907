@@ -8,11 +8,14 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
+import frc.robot.auto.AutoSelector;
+import frc.robot.auto.AutoStateMachine;
 import frc.robot.subsystem.CWPanel;
 import frc.robot.subsystem.Drivetrain;
 import frc.robot.subsystem.Hook;
 import frc.robot.subsystem.Intake;
 import frc.robot.subsystem.Shooter;
+import frc.robot.teleop.ITeleopLooper;
 import frc.robot.util.CrashTracker;
 
 /**
@@ -29,11 +32,19 @@ public class Robot extends TimedRobot {
    */
 
    private SubsystemManager mSubsystemManager;
+
    private Drivetrain mDrive;
    private Shooter mShooter;
    private Intake mIntake;
    private Hook mHook;
    private CWPanel mCWPanel;
+
+   private AutoSelector mAutoSelector;
+   private AutoStateMachine mAutoStateMachine;
+
+   private ITeleopLooper mTeleopLooper;
+
+   private byte mAutoMode;
 
   @Override
   public void robotInit() {
@@ -44,6 +55,11 @@ public class Robot extends TimedRobot {
     mIntake = Intake.getInstance();
     mHook = Hook.getInstance();
     mCWPanel = CWPanel.getInstance();
+
+    mAutoSelector = AutoSelector.getInstance();
+    mAutoStateMachine = AutoStateMachine.getInstance();
+
+    mTeleopLooper = ITeleopLooper.getInstance();
 
     mSubsystemManager.setSystem (
       mDrive, 
@@ -61,6 +77,9 @@ public class Robot extends TimedRobot {
     mSubsystemManager.zeroAll();
     mSubsystemManager.outPutDashboard();
 
+    mAutoMode = mAutoSelector.getAutoMode();
+    mAutoStateMachine.init(mAutoMode);
+
     CrashTracker.logAutoInit();
   }
 
@@ -68,6 +87,7 @@ public class Robot extends TimedRobot {
   public void autonomousPeriodic() {
     mSubsystemManager.outPutDashboard();
 
+    mAutoStateMachine.autonomousEnabledLoop();
   }
 
   @Override
@@ -75,12 +95,17 @@ public class Robot extends TimedRobot {
     mSubsystemManager.zeroAll();
     mSubsystemManager.outPutDashboard();
 
+    mTeleopLooper.init();
+
     CrashTracker.logTeleopInit();
   }
 
   @Override
   public void teleopPeriodic() {
     mSubsystemManager.outPutDashboard();
+
+    mTeleopLooper.driveEnabledLoop();
+    mTeleopLooper.superstructureEnabledLoop();
   }
 
   @Override
