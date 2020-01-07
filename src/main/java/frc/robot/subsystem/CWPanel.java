@@ -7,12 +7,14 @@
 
 package frc.robot.subsystem;
 
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.revrobotics.ColorMatch;
 import com.revrobotics.ColorMatchResult;
 import com.revrobotics.ColorSensorV3;
 
 import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.util.Color;
+import frc.robot.Constants;
 
 /**
  * Add your docs here.
@@ -33,6 +35,8 @@ public class CWPanel extends Subsystem {
     private final Color kRedTarget = ColorMatch.makeColor(0.561, 0.232, 0.114);
     private final Color kYellowTarget = ColorMatch.makeColor(0.361, 0.524, 0.113);
 
+    WPI_TalonSRX mCWMotor = new WPI_TalonSRX(Constants.CW_CAN);
+
     public static CWPanel getInstance() {
         if (mInstance == null) {
             mInstance = new CWPanel();
@@ -47,7 +51,8 @@ public class CWPanel extends Subsystem {
         mcolourMatcher.addColorMatch(kGreenTarget);
         mcolourMatcher.addColorMatch(kRedTarget);
         mcolourMatcher.addColorMatch(kYellowTarget); 
-        
+
+        mCWMotor.configFactoryDefault();
     }
 
     @Override
@@ -59,7 +64,7 @@ public class CWPanel extends Subsystem {
     @Override
     public void stop() {
         // TODO Auto-generated method stub
-
+        mCWMotor.stopMotor();
     }
 
     @Override
@@ -88,8 +93,8 @@ public class CWPanel extends Subsystem {
 
     }
 
-    public void manualControl(double speed) {
-
+    public void manualControl(double speed) {  
+        mCWMotor.set(speed);
     }
 
     public char getDetectedColour() {
