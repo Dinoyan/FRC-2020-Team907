@@ -54,5 +54,21 @@ public class AutoStateMachine {
     // **************************************
     // *********** AUTO ACTIONS *************
     // **************************************
+
+    private void drive(double distance) {
+
+    }
+
+    private void turn(double angle) {
+
+    }
+
+    private void intake() {
+
+    }
+
+    private void shoot() {
+        
+    }
     
 }
