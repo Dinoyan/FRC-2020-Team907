@@ -27,6 +27,10 @@ public class SubsystemManager {
         return mInstance;
     }
 
+    public void init() {
+        mAllSubsystem.forEach(Subsystem::init);
+    }
+
     public void outPutDashboard() {
         mAllSubsystem.forEach(Subsystem::updateDashboard);
     }
