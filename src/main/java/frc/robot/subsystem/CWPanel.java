@@ -26,7 +26,7 @@ public class CWPanel extends Subsystem {
     private final I2C.Port i2cPort = I2C.Port.kOnboard;
     private final ColorSensorV3 mColourSensor = new ColorSensorV3(i2cPort);
     
-  private final ColorMatch mcolourMatcher = new ColorMatch();
+    private final ColorMatch mcolourMatcher = new ColorMatch();
 
     private final Color kBlueTarget = ColorMatch.makeColor(0.143, 0.427, 0.429);
     private final Color kGreenTarget = ColorMatch.makeColor(0.197, 0.561, 0.240);
@@ -74,10 +74,12 @@ public class CWPanel extends Subsystem {
 
     }
 
+    // Read enc -> PID -> output
     public void rotate() {
 
     }
 
+    // Get the colour -> rotate to colour
     public void posToColour(char colour) {
 
     }
