@@ -69,6 +69,7 @@ public class Robot extends TimedRobot {
       mCWPanel
     );
 
+    mSubsystemManager.init();
     CrashTracker.logRobotInit();
   }
 
