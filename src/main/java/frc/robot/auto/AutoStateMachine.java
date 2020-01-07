@@ -14,7 +14,7 @@ public class AutoStateMachine {
     private static AutoStateMachine mInstance = null;
 
     // ************ AUTO MODES ***************
-
+    
     // ************* STATES ******************
 
     private byte currentState;
