@@ -11,8 +11,16 @@ package frc.robot.teleop;
  * Add your docs here.
  */
 public class ITeleopLooper implements ITeleop {
-    
+    private static ITeleopLooper mInstance = null;
+
     char mColour = '?';
+
+    public static ITeleopLooper getInstance() {
+        if (mInstance == null){
+            mInstance = new ITeleopLooper();
+        }
+        return mInstance;
+    }
 
     @Override
     public void init() {
