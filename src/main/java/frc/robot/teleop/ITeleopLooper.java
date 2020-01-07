@@ -7,11 +7,23 @@
 
 package frc.robot.teleop;
 
+import frc.robot.subsystem.CWPanel;
+import frc.robot.subsystem.Drivetrain;
+import frc.robot.subsystem.Hook;
+import frc.robot.subsystem.Intake;
+import frc.robot.subsystem.Shooter;
+
 /**
- * Add your docs here.
+ * Contains all the teleop code
  */
 public class ITeleopLooper implements ITeleop {
     private static ITeleopLooper mInstance = null;
+
+    private Drivetrain mDrive;
+    private Shooter mShooter;
+    private Intake mIntake;
+    private Hook mHook;
+    private CWPanel mCWPanel;
 
     char mColour = '?';
 
@@ -25,7 +37,17 @@ public class ITeleopLooper implements ITeleop {
     @Override
     public void init() {
         // TODO Auto-generated method stub
+        mDrive = Drivetrain.getInstance();
+        mShooter = Shooter.getInstance();
+        mIntake = Intake.getInstance();
+        mHook = Hook.getInstance();
+        mCWPanel = CWPanel.getInstance();
 
+        mDrive.init();
+        mShooter.init();
+        mIntake.init();
+        mHook.init();
+        mCWPanel.init();
     }
 
     @Override
@@ -41,7 +63,6 @@ public class ITeleopLooper implements ITeleop {
     }
 
     public char getFMSColour() {
-
 
         return mColour;
     }
