@@ -7,12 +7,18 @@
 
 package frc.robot.subsystem;
 
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+
+import frc.robot.Constants;
+
 /**
  * Add your docs here.
  */
 public class Hook extends Subsystem {
 
     private static Hook mInstance = null;
+
+    WPI_TalonSRX mHookMotor = new WPI_TalonSRX(Constants.HOOK_CAN);
 
     public static Hook getInstance() {
         if (mInstance == null) {
@@ -23,8 +29,7 @@ public class Hook extends Subsystem {
 
     @Override
     public void init() {
-        // TODO Auto-generated method stub
-
+        mHookMotor.configFactoryDefault();
     }
 
     @Override
@@ -35,14 +40,13 @@ public class Hook extends Subsystem {
 
     @Override
     public void stop() {
-        // TODO Auto-generated method stub
-
+        mHookMotor.stopMotor();
     }
 
     @Override
     public Boolean checkSystem() {
         // TODO Auto-generated method stub
-        return null;
+        return true;
     }
 
     @Override
@@ -51,12 +55,12 @@ public class Hook extends Subsystem {
 
     }
 
-    public void pullUp() {
-
+    public void pullUp(double speed) {
+        mHookMotor.set(speed);
     }
 
-    public void releaseDown() {
-
+    public void releaseDown(double speed) {
+        mHookMotor.set(-speed);
     }
 
     public void switchModeBrake() {
