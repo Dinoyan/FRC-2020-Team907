@@ -7,6 +7,8 @@
 
 package frc.robot.teleop;
 
+import edu.wpi.first.wpilibj.DriverStation;
+import frc.robot.JoystickHandler;
 import frc.robot.subsystem.CWPanel;
 import frc.robot.subsystem.Drivetrain;
 import frc.robot.subsystem.Hook;
@@ -25,7 +27,9 @@ public class ITeleopLooper implements ITeleop {
     private Hook mHook;
     private CWPanel mCWPanel;
 
-    char mColour = '?';
+    private JoystickHandler mJoystick;
+
+    String mGameData = "??";
 
     public static ITeleopLooper getInstance() {
         if (mInstance == null){
@@ -43,6 +47,8 @@ public class ITeleopLooper implements ITeleop {
         mHook = Hook.getInstance();
         mCWPanel = CWPanel.getInstance();
 
+        mJoystick = JoystickHandler.getInstance();
+    
         mDrive.init();
         mShooter.init();
         mIntake.init();
@@ -52,18 +58,41 @@ public class ITeleopLooper implements ITeleop {
 
     @Override
     public void driveEnabledLoop() {
-        // TODO Auto-generated method stub
+        double left = mJoystick.getDriveLeft();
+        double right = mJoystick.getDriveRight();
 
+        mDrive.drive(left, right);
     }
 
     @Override
     public void superstructureEnabledLoop() {
-        // TODO Auto-generated method stub
+        intakeEnabledLoop();
+        shooterEnabledLoop();
+        hookEnabledLoop();
+        CWEnabledLoop();
+    }
+
+    private void intakeEnabledLoop() {
 
     }
 
-    public char getFMSColour() {
+    private void shooterEnabledLoop() {
 
-        return mColour;
+    }
+
+    private void hookEnabledLoop() {
+
+    }
+
+    private void CWEnabledLoop() {
+
+    }
+
+    // getting FMS data
+    public char getFMSColour() {
+        char _colour = '?';
+        mGameData = DriverStation.getInstance().getGameSpecificMessage();
+        _colour = mGameData.charAt(0);
+        return _colour;
     }
 }
