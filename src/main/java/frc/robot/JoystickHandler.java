@@ -39,5 +39,12 @@ public class JoystickHandler {
         return mShootStick;
     }
 
+    public double getDriveLeft() {
+        return mDriveStick.getRawAxis(Constants.DRIVE_LEFT_AXIS);
+    }
+
+    public double getDriveRight() {
+        return mDriveStick.getRawAxis(Constants.DRIVE_RIGHT_AXIS);
+    }
 
 }
