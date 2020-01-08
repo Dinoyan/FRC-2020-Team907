@@ -36,6 +36,8 @@ public class Constants {
     public final static int DRIVE_STICK = 0;
     public final static int SHOOT_STICK = 1;
 
+    public final static int DRIVE_LEFT_AXIS = 1;
+    public final static int DRIVE_RIGHT_AXIS = 5;
 
     // ********************* PID ***************************
 
