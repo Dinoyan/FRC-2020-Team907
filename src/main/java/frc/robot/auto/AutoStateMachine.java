@@ -14,8 +14,13 @@ public class AutoStateMachine {
     private static AutoStateMachine mInstance = null;
 
     // ************ AUTO MODES ***************
-    
+    private byte DEFAULT = 0;
+   
     // ************* STATES ******************
+    private byte DRIVE = 0;
+    private byte TURN = 1;
+    private byte SHOOT = 2;
+    private byte INTAKE = 3;
 
     private byte currentState;
     private byte currentStateIndex = 0;
@@ -36,14 +41,28 @@ public class AutoStateMachine {
 
     public void buildAuto(byte mode) {
         byte stateCounter = 0;
+
+        if (DEFAULT == mode) {
+
+        }
+
+        setCurrentState(nextStateArray[currentStateIndex]);
     }
 
     public void setCurrentState(byte state) {
-
+        currentState = state;
     }
 
     public void autonomousEnabledLoop() {
+        if (currentState == DRIVE) {
 
+        } else if (currentState == TURN) {
+
+        } else if (currentState == SHOOT) {
+
+        } else if (currentState == INTAKE) {
+
+        }
     }
 
     private boolean infLoopChecker() {
