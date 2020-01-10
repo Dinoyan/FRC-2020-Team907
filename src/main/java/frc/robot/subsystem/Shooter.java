@@ -9,7 +9,7 @@ package frc.robot.subsystem;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
-import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 import frc.robot.Constants;
 
@@ -20,8 +20,8 @@ public class Shooter extends Subsystem {
 
     private static Shooter mInstance = null;
 
-    private TalonSRX mShooterMaster;
-    private TalonSRX mShooterSlave;
+    private WPI_TalonSRX mShooterMaster;
+    private WPI_TalonSRX mShooterSlave;
 
 
     public static Shooter getInstance() {
@@ -34,12 +34,14 @@ public class Shooter extends Subsystem {
     @Override
     public void init() {
         // TODO Auto-generated method stub
-        mShooterMaster = new TalonSRX(Constants.SHOOTER_CAN[0]);
-        mShooterSlave = new TalonSRX(Constants.SHOOTER_CAN[1]);
+        mShooterMaster = new WPI_TalonSRX(Constants.SHOOTER_CAN[0]);
+        mShooterSlave = new WPI_TalonSRX(Constants.SHOOTER_CAN[1]);
 
         mShooterMaster.configFactoryDefault();
         mShooterSlave.configFactoryDefault();
 
+        mShooterMaster.follow(mShooterSlave);
+        
         mShooterMaster.setNeutralMode(NeutralMode.Coast);
         mShooterSlave.setNeutralMode(NeutralMode.Coast);
     }
