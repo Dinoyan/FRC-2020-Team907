@@ -31,6 +31,8 @@ public class ITeleopLooper implements ITeleop {
 
     String mGameData = "??";
 
+    boolean mCWButtonPressed = false;
+
     public static ITeleopLooper getInstance() {
         if (mInstance == null){
             mInstance = new ITeleopLooper();
@@ -85,11 +87,29 @@ public class ITeleopLooper implements ITeleop {
     }
 
     private void CWEnabledLoop() {
+        char FMScolour = getFMSColour();
 
+        if (mJoystick.getCWButton()) {
+            mCWButtonPressed = true;
+        }
+
+        if (mCWButtonPressed) {
+            if (FMScolour == '?') {
+                mCWPanel.rotate();
+                if (mCWPanel.stagedFinished()) {
+                    mCWButtonPressed = false;
+                }
+            } else {
+                mCWPanel.posToColour(getFMSColour());
+                if (mCWPanel.stagedFinished()) {
+                    mCWButtonPressed = false;
+                }
+            }
+        }
     }
 
     // getting FMS data
-    public char getFMSColour() {
+    private char getFMSColour() {
         char _colour = '?';
         mGameData = DriverStation.getInstance().getGameSpecificMessage();
         _colour = mGameData.charAt(0);
