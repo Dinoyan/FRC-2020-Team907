@@ -15,6 +15,7 @@ import com.revrobotics.ColorSensorV3;
 import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.util.Color;
 import frc.robot.Constants;
+import frc.robot.util.CyberPID;
 
 /**
  * Add your docs here.
@@ -37,6 +38,8 @@ public class CWPanel extends Subsystem {
 
     WPI_TalonSRX mCWMotor = new WPI_TalonSRX(Constants.CW_CAN);
 
+    private CyberPID mCW_PID;
+
     public static CWPanel getInstance() {
         if (mInstance == null) {
             mInstance = new CWPanel();
@@ -53,6 +56,9 @@ public class CWPanel extends Subsystem {
         mcolourMatcher.addColorMatch(kYellowTarget); 
 
         mCWMotor.configFactoryDefault();
+
+        mCW_PID = new CyberPID();
+        mCW_PID.reset();
     }
 
     @Override
@@ -81,7 +87,6 @@ public class CWPanel extends Subsystem {
 
     // Read enc -> PID -> output
     public void rotate() {
-
     }
 
     // Get the colour -> rotate to colour
