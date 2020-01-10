@@ -39,9 +39,13 @@ public class Constants {
     public final static int DRIVE_LEFT_AXIS = 1;
     public final static int DRIVE_RIGHT_AXIS = 5;
 
+    public final static int CW_BUTTON = 3;
+
     // ********************* PID ***************************
 
 
+    // ********************* MISC ***************************
+    public final static int AUTO_TIME = 15;
 
 
 }
