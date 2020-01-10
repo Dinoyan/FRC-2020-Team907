@@ -30,7 +30,9 @@ public class Constants {
 
 
     // ******************** INTAKE *************************
-    
+    public final static int[] INTAKE_MOTORS = {8, 9};
+    public final static int[] FRONT_PISTONS = {0, 1};
+    public final static int[] BACK_PISTONS = {2, 3};
 
     // ****************** JOYSTICKS ************************
     public final static int DRIVE_STICK = 0;
@@ -40,6 +42,9 @@ public class Constants {
     public final static int DRIVE_RIGHT_AXIS = 5;
 
     public final static int CW_BUTTON = 3;
+
+    public final static int FRONT_INTAKE_PISTON_BTN = 6;
+    public final static int BACK_INTAKE_PISTON_BTN = 5;
 
     // ********************* PID ***************************
 
