@@ -7,6 +7,10 @@
 
 package frc.robot.subsystem;
 
+import com.ctre.phoenix.motorcontrol.can.TalonFX;
+
+import frc.robot.Constants;
+
 /**
  * Add your docs here.
  */
@@ -18,6 +22,11 @@ public class Drivetrain extends Subsystem {
     private double mLeftDistance = 0.0;
     private double mAngle = 0.0;
 
+    private TalonFX mLMaster;
+    private TalonFX mLSlave;
+    private TalonFX mRMaster;
+    private TalonFX mRSlave;
+
     public static Drivetrain getInstance() {
         if (mInstance == null) {
             mInstance = new Drivetrain();
@@ -25,11 +34,17 @@ public class Drivetrain extends Subsystem {
         return mInstance;
     }
 
-
     @Override
     public void init() {
-        // TODO Auto-generated method stub
+        mLMaster = new TalonFX(Constants.DRIVE_LEFT[0]);
+        mLSlave = new TalonFX(Constants.DRIVE_LEFT[1]);
+        mRMaster = new TalonFX(Constants.DRIVE_RIGHT[0]);
+        mRSlave = new TalonFX(Constants.DRIVE_RIGHT[1]);
 
+        mLMaster.configFactoryDefault();
+        mLSlave.configFactoryDefault();
+        mRMaster.configFactoryDefault();
+        mRSlave.configFactoryDefault();
     }
 
     @Override
