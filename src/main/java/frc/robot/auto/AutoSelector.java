@@ -42,11 +42,11 @@ public class AutoSelector {
 
         switch(mSelected) {
             case kJustDrive:
-                mMode = 1;
+                mMode = 0;
                 break;
             
             case kCenterShoot:
-                mMode = 2;
+                mMode = 1;
                 break;
         }
         return mMode;
