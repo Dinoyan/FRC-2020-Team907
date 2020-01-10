@@ -7,8 +7,10 @@
 
 package frc.robot.subsystem;
 
-import com.ctre.phoenix.motorcontrol.can.TalonFX;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
+import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import frc.robot.Constants;
 
 /**
@@ -22,10 +24,12 @@ public class Drivetrain extends Subsystem {
     private double mLeftDistance = 0.0;
     private double mAngle = 0.0;
 
-    private TalonFX mLMaster;
-    private TalonFX mLSlave;
-    private TalonFX mRMaster;
-    private TalonFX mRSlave;
+    private WPI_TalonFX mLMaster;
+    private WPI_TalonFX mLSlave;
+    private WPI_TalonFX mRMaster;
+    private WPI_TalonFX mRSlave;
+
+    private DifferentialDrive mDrive = new DifferentialDrive(mLMaster, mRMaster);
 
     public static Drivetrain getInstance() {
         if (mInstance == null) {
@@ -36,15 +40,20 @@ public class Drivetrain extends Subsystem {
 
     @Override
     public void init() {
-        mLMaster = new TalonFX(Constants.DRIVE_LEFT[0]);
-        mLSlave = new TalonFX(Constants.DRIVE_LEFT[1]);
-        mRMaster = new TalonFX(Constants.DRIVE_RIGHT[0]);
-        mRSlave = new TalonFX(Constants.DRIVE_RIGHT[1]);
+        mLMaster = new WPI_TalonFX(Constants.DRIVE_LEFT[0]);
+        mLSlave = new WPI_TalonFX(Constants.DRIVE_LEFT[1]);
+        mRMaster = new WPI_TalonFX(Constants.DRIVE_RIGHT[0]);
+        mRSlave = new WPI_TalonFX(Constants.DRIVE_RIGHT[1]);
 
         mLMaster.configFactoryDefault();
         mLSlave.configFactoryDefault();
         mRMaster.configFactoryDefault();
         mRSlave.configFactoryDefault();
+
+        mLMaster.follow(mLSlave);
+        mRMaster.follow(mRSlave);
+
+        mDrive.setRightSideInverted(false);
     }
 
     @Override
@@ -55,7 +64,7 @@ public class Drivetrain extends Subsystem {
 
     @Override
     public void stop() {
-        // TODO Auto-generated method stub
+        drive(0, 0);
 
     }
 
@@ -72,7 +81,7 @@ public class Drivetrain extends Subsystem {
     }
 
     public void drive(double left, double right) {
-
+        mDrive.tankDrive(left, right);
     }
 
     public double getRightDistance() {
@@ -88,10 +97,12 @@ public class Drivetrain extends Subsystem {
     }
 
     public void switchToBrake() {
-
+        mRMaster.setNeutralMode(NeutralMode.Brake);
+        mLMaster.setNeutralMode(NeutralMode.Brake);
     }
 
     public void switchToCoast() {
-        
+        mRMaster.setNeutralMode(NeutralMode.Coast);
+        mLMaster.setNeutralMode(NeutralMode.Coast);
     }
 }
