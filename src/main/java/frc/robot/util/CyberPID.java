@@ -12,6 +12,7 @@ package frc.robot.util;
  * Dinoyan Ganeshalingam
  */
 public class CyberPID {
+
     private double kP;
     private double kI;
     private double kD;
@@ -22,7 +23,7 @@ public class CyberPID {
     private int mCount = 0;
     boolean mTarget = false;
 
-    private double mPrevError;
+    private double prevError;
 
     private double mError;
     private double mIntegral;
@@ -78,6 +79,12 @@ public class CyberPID {
         return this.mSetpoint;
     }
 
+    public void reset() {
+        this.mCount = 0;
+        this.mTarget = false;
+        this.mSetpoint = 0 ;
+    }
+
     public boolean onTarget(double curr) {
 
         if (Math.abs(this.mSetpoint - curr) < kTolerance) {
@@ -90,7 +97,7 @@ public class CyberPID {
         return mTarget;
     }
 
-    public double getOutput(double curr) {
+    public synchronized double getOutput(double curr) {
         this.mError = this.mSetpoint - curr;
         
         this.mIntegral += (mError * kResetTime);
@@ -99,8 +106,8 @@ public class CyberPID {
             mIntegral = 0;
         }
         
-        this.mDerivative = mError - mPrevError;
-        mPrevError = mError;
+        this.mDerivative = mError - prevError;
+        prevError = mError;
 
         this.mOutput = this.kP * mError + this.kI * mIntegral +  this.kD *mDerivative;
         
