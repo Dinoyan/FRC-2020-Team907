@@ -40,6 +40,8 @@ public class CWPanel extends Subsystem {
 
     private CyberPID mCW_PID;
 
+    boolean mStagedFinished = false;
+
     public static CWPanel getInstance() {
         if (mInstance == null) {
             mInstance = new CWPanel();
@@ -87,6 +89,22 @@ public class CWPanel extends Subsystem {
 
     // Read enc -> PID -> output
     public void rotate() {
+        mCW_PID.setSetpoint(4);
+        boolean onTarget = mCW_PID.onTarget(getWheelEnc());
+
+        if (!onTarget) {
+            mStagedFinished = false;
+            onTarget = mCW_PID.onTarget(getWheelEnc());
+            double value = mCW_PID.getOutput(getWheelEnc());
+            manualControl(value);
+        } else {
+            manualControl(0);
+            mStagedFinished = true;
+        }
+    }
+
+    public boolean stagedFinished() {
+        return mStagedFinished;
     }
 
     // Get the colour -> rotate to colour
@@ -94,8 +112,8 @@ public class CWPanel extends Subsystem {
 
     }
 
-    public void getWheelEnc() {
-
+    public double getWheelEnc() {
+        return 0.0;
     }
 
     public void manualControl(double speed) {  
