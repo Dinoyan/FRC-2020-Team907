@@ -33,6 +33,9 @@ public class ITeleopLooper implements ITeleop {
 
     boolean mCWButtonPressed = false;
 
+    boolean mFrontIntakeState = true;
+    boolean mBackIntakeState = true;
+
     public static ITeleopLooper getInstance() {
         if (mInstance == null){
             mInstance = new ITeleopLooper();
@@ -75,7 +78,15 @@ public class ITeleopLooper implements ITeleop {
     }
 
     private void intakeEnabledLoop() {
+        if (mJoystick.getFrontIntakePiston()) {
+            mFrontIntakeState = !mFrontIntakeState;
+            mIntake.frontIntake(mFrontIntakeState);
+        }
 
+        if (mJoystick.getBackIntakePiston()) {
+            mBackIntakeState = !mBackIntakeState;
+            mIntake.backIntake(mBackIntakeState);
+        }
     }
 
     private void shooterEnabledLoop() {
