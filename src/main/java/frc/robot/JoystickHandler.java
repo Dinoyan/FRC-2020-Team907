@@ -47,4 +47,8 @@ public class JoystickHandler {
         return mDriveStick.getRawAxis(Constants.DRIVE_RIGHT_AXIS);
     }
 
+    public boolean getCWButton() {
+        return mShootStick.getRawButtonPressed(Constants.CW_BUTTON);
+    }
+
 }
