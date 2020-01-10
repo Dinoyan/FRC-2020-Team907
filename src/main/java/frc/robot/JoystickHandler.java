@@ -51,4 +51,12 @@ public class JoystickHandler {
         return mShootStick.getRawButtonPressed(Constants.CW_BUTTON);
     }
 
+    public boolean getFrontIntakePiston() {
+        return mShootStick.getRawButtonPressed(Constants.FRONT_INTAKE_PISTON_BTN);
+    }
+
+    public boolean getBackIntakePiston() {
+        return mShootStick.getRawButtonPressed(Constants.BACK_INTAKE_PISTON_BTN);
+    }
+
 }
