@@ -7,6 +7,11 @@
 
 package frc.robot.auto;
 
+import edu.wpi.first.wpilibj.Timer;
+import frc.robot.Constants;
+import frc.robot.subsystem.Drivetrain;
+import frc.robot.util.CyberPID;
+
 /**
  * Add your docs here.
  */
@@ -21,12 +26,21 @@ public class AutoStateMachine {
     private byte TURN = 1;
     private byte SHOOT = 2;
     private byte INTAKE = 3;
+    private byte WAIT = 4;
 
     private byte currentState;
     private byte currentStateIndex = 0;
     private byte[] nextStateArray = new byte[255];
 
     private boolean mStop = false;
+    private Timer mTimer = new Timer();
+
+    // PIDs
+    private CyberPID mDrivePID;
+    private CyberPID mTurnPID;
+
+    // Subsystems
+    private Drivetrain mDrive;
 
     public static AutoStateMachine getInstance() {
         if (mInstance == null) {
@@ -36,7 +50,14 @@ public class AutoStateMachine {
     }
 
     public void init(byte selection) {
+        // Subsystems
+         mDrive = Drivetrain.getInstance();
 
+         currentStateIndex = 0;
+         setCurrentState(WAIT);
+         buildAuto(selection);
+        
+         mTimer.start();
     }
 
     public void buildAuto(byte mode) {
@@ -66,7 +87,9 @@ public class AutoStateMachine {
     }
 
     private boolean infLoopChecker() {
-        
+        if (mTimer.get() > Constants.AUTO_TIME) {
+            mStop = true;
+        }
         return mStop;
     }
 
@@ -75,11 +98,43 @@ public class AutoStateMachine {
     // **************************************
 
     private void drive(double distance) {
-
+        mDrivePID.setSetpoint(distance);
+        Boolean cond = infLoopChecker();
+        boolean onTarget = mDrivePID.onTarget(mDrive.getRightDistance());
+        
+        if (!cond) {
+            if (!onTarget) {
+            onTarget = mDrivePID.onTarget(mDrive.getRightDistance());
+            cond = infLoopChecker();
+            double value = mDrivePID.getOutput(mDrive.getRightDistance());
+            mDrive.drive(value * .5, value * .5);
+            } else {
+                mDrive.drive(0, 0);
+                currentStateIndex++;
+                setCurrentState(nextStateArray[currentStateIndex]);
+            }
+        }
+        mDrivePID.reset();
     }
 
     private void turn(double angle) {
+        mTurnPID.setSetpoint(angle);
+        boolean cond = infLoopChecker();
+        boolean onTarget = mTurnPID.onTarget(mDrive.getAngle());
 
+        if (!cond) {
+            if (!onTarget) {
+            onTarget = mTurnPID.onTarget(mDrive.getAngle());
+            cond = infLoopChecker();
+            double value = mTurnPID.getOutput(mDrive.getAngle());
+            mDrive.drive(-value * .5, value * .5);
+            } else {
+                mDrive.drive(0, 0);
+                currentStateIndex++;
+                setCurrentState(nextStateArray[currentStateIndex]);
+            }
+        }
+        mTurnPID.reset();
     }
 
     private void intake() {
