@@ -7,9 +7,6 @@
 
 package frc.robot.teleop;
 
-/**
- * Add your docs here.
- */
 public interface ITeleop {
 
     public void init();
