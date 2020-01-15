@@ -8,6 +8,7 @@
 package frc.robot.teleop;
 
 import edu.wpi.first.wpilibj.DriverStation;
+import frc.robot.Constants;
 import frc.robot.JoystickHandler;
 import frc.robot.subsystem.CWPanel;
 import frc.robot.subsystem.Drivetrain;
@@ -45,7 +46,6 @@ public class ITeleopLooper implements ITeleop {
 
     @Override
     public void init() {
-        // TODO Auto-generated method stub
         mDrive = Drivetrain.getInstance();
         mShooter = Shooter.getInstance();
         mIntake = Intake.getInstance();
@@ -78,6 +78,7 @@ public class ITeleopLooper implements ITeleop {
     }
 
     private void intakeEnabledLoop() {
+        // intake extend / retract 
         if (mJoystick.getFrontIntakePiston()) {
             mFrontIntakeState = !mFrontIntakeState;
             mIntake.frontIntake(mFrontIntakeState);
@@ -87,10 +88,15 @@ public class ITeleopLooper implements ITeleop {
             mBackIntakeState = !mBackIntakeState;
             mIntake.backIntake(mBackIntakeState);
         }
+
+        // intake rollers
+        if (mJoystick.getIntakeRollersBtn()) {
+            mIntake.intakeCell(Constants.INTAKE_ROLLER_SPEED);
+        }
     }
 
     private void shooterEnabledLoop() {
-
+        
     }
 
     private void hookEnabledLoop() {
@@ -104,6 +110,8 @@ public class ITeleopLooper implements ITeleop {
             mCWButtonPressed = true;
         }
 
+        // check which stage by checking fms data for colour
+        // if colour is null then, in stage 1 or 2
         if (mCWButtonPressed) {
             if (FMScolour == '?') {
                 mCWPanel.rotate();
@@ -119,7 +127,7 @@ public class ITeleopLooper implements ITeleop {
         }
     }
 
-    // getting FMS data
+    // get data from fms
     private char getFMSColour() {
         char _colour = '?';
         mGameData = DriverStation.getInstance().getGameSpecificMessage();
