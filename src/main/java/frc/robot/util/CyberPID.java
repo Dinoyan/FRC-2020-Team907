@@ -86,7 +86,6 @@ public class CyberPID {
     }
 
     public boolean onTarget(double curr) {
-
         if (Math.abs(this.mSetpoint - curr) < kTolerance) {
             mCount++;
             mTarget = mCount > mFinishCount;
