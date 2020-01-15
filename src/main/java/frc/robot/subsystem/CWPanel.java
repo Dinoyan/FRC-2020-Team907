@@ -13,6 +13,7 @@ import com.revrobotics.ColorMatchResult;
 import com.revrobotics.ColorSensorV3;
 
 import edu.wpi.first.wpilibj.I2C;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import frc.robot.Constants;
 import frc.robot.util.CyberPID;
@@ -51,7 +52,6 @@ public class CWPanel extends Subsystem {
 
     @Override
     public void init() {
-        // TODO Auto-generated method stub
         mcolourMatcher.addColorMatch(kBlueTarget);
         mcolourMatcher.addColorMatch(kGreenTarget);
         mcolourMatcher.addColorMatch(kRedTarget);
@@ -65,26 +65,22 @@ public class CWPanel extends Subsystem {
 
     @Override
     public void zeroSensors() {
-        // TODO Auto-generated method stub
 
     }
 
     @Override
     public void stop() {
-        // TODO Auto-generated method stub
         mCWMotor.stopMotor();
     }
 
     @Override
     public Boolean checkSystem() {
-        // TODO Auto-generated method stub
         return null;
     }
 
     @Override
     public void updateDashboard() {
-        // TODO Auto-generated method stub
-
+        SmartDashboard.putBoolean("CW Finished", mStagedFinished);
     }
 
     // Read enc -> PID -> output
