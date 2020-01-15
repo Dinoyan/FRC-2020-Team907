@@ -12,9 +12,6 @@ import java.util.List;
 
 import frc.robot.subsystem.Subsystem;
 
-/**
- * Add your docs here.
- */
 public class SubsystemManager {
     private static SubsystemManager mInstance = null;
 
