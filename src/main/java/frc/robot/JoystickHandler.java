@@ -9,9 +9,6 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.Joystick;
 
-/**
- * Add your docs here.
- */
 public class JoystickHandler {
 
     private static JoystickHandler mInstance = null;
@@ -57,6 +54,18 @@ public class JoystickHandler {
 
     public boolean getBackIntakePiston() {
         return mShootStick.getRawButtonPressed(Constants.BACK_INTAKE_PISTON_BTN);
+    }
+
+    public boolean getIntakeRollersBtn() {
+        return mShootStick.getRawButtonPressed(Constants.INTAKE_ROLLERS_BTN);
+    }
+
+    public void getHookBtn() {
+
+    }
+
+    public void getShootBtn() {
+        
     }
 
 }
