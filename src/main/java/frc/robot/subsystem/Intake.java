@@ -44,7 +44,6 @@ public class Intake extends Subsystem{
 
     @Override
     public void zeroSensors() {
-        // TODO Auto-generated method stub
 
     }
 
@@ -56,14 +55,12 @@ public class Intake extends Subsystem{
 
     @Override
     public Boolean checkSystem() {
-        // TODO Auto-generated method stub
         return true;
     }
 
     @Override
     public void updateDashboard() {
-        // TODO Auto-generated method stub
-
+        
     }
 
     public void intakeCell(double speed) {
@@ -77,7 +74,13 @@ public class Intake extends Subsystem{
     }
 
     public void ejectCell(double speed) {
-        
+        if (mFrontPistons.get() == Value.kForward) {
+            mFrontMotor.set(-speed);
+        }
+
+        if (mBackPistons.get() == Value.kForward) {
+            mBackMotor.set(-speed);
+        }
     }
 
     public void frontIntake(boolean state) {
