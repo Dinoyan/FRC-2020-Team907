@@ -7,6 +7,7 @@
 
 package frc.robot.subsystem;
 
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 import frc.robot.Constants;
@@ -18,7 +19,7 @@ public class Hook extends Subsystem {
 
     private static Hook mInstance = null;
 
-    WPI_TalonSRX mHookMotor = new WPI_TalonSRX(Constants.HOOK_CAN);
+    WPI_TalonSRX mHookMotor;
 
     public static Hook getInstance() {
         if (mInstance == null) {
@@ -29,12 +30,12 @@ public class Hook extends Subsystem {
 
     @Override
     public void init() {
+        mHookMotor = new WPI_TalonSRX(Constants.HOOK_CAN);
         mHookMotor.configFactoryDefault();
     }
 
     @Override
     public void zeroSensors() {
-        // TODO Auto-generated method stub
 
     }
 
@@ -45,13 +46,11 @@ public class Hook extends Subsystem {
 
     @Override
     public Boolean checkSystem() {
-        // TODO Auto-generated method stub
         return true;
     }
 
     @Override
     public void updateDashboard() {
-        // TODO Auto-generated method stub
 
     }
 
@@ -64,10 +63,18 @@ public class Hook extends Subsystem {
     }
 
     public void switchModeBrake() {
-
+        mHookMotor.setNeutralMode(NeutralMode.Brake);
     }
 
     public void switchModeCoast() {
+        mHookMotor.setNeutralMode(NeutralMode.Coast);
+    }
+
+    public void lock() {
+
+    }
+
+    public void unlock() {
         
     }
 }
