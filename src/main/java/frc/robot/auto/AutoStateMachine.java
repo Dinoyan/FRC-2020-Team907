@@ -10,6 +10,8 @@ package frc.robot.auto;
 import edu.wpi.first.wpilibj.Timer;
 import frc.robot.Constants;
 import frc.robot.subsystem.Drivetrain;
+import frc.robot.subsystem.Intake;
+import frc.robot.subsystem.Shooter;
 import frc.robot.util.CyberPID;
 
 /**
@@ -41,6 +43,8 @@ public class AutoStateMachine {
 
     // Subsystems
     private Drivetrain mDrive;
+    private Shooter mShooter;
+    private Intake mIntake;
 
     public static AutoStateMachine getInstance() {
         if (mInstance == null) {
@@ -52,6 +56,12 @@ public class AutoStateMachine {
     public void init(byte selection) {
         // Subsystems
          mDrive = Drivetrain.getInstance();
+         mShooter = Shooter.getInstance();
+         mIntake = Intake.getInstance();
+
+         mDrive.init();
+         mShooter.init();
+         mIntake.init();
 
          currentStateIndex = 0;
          setCurrentState(WAIT);
