@@ -7,10 +7,12 @@
 
 package frc.robot.subsystem;
 
+import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
 
 /**
@@ -22,6 +24,7 @@ public class Drivetrain extends Subsystem {
 
     private double mRightDistance = 0.0;
     private double mLeftDistance = 0.0;
+    private double mAvgDistance = 0.0;
     private double mAngle = 0.0;
 
     private WPI_TalonFX mLMaster;
@@ -54,12 +57,15 @@ public class Drivetrain extends Subsystem {
         mRMaster.follow(mRSlave);
 
         mDrive.setRightSideInverted(false);
+
+        // TO-DO
+        // config encoders
+        mRMaster.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute, 0, 10);
     }
 
     @Override
     public void zeroSensors() {
-        // TODO Auto-generated method stub
-
+        mRMaster.setSelectedSensorPosition(0);
     }
 
     @Override
@@ -70,14 +76,14 @@ public class Drivetrain extends Subsystem {
 
     @Override
     public Boolean checkSystem() {
-        // TODO Auto-generated method stub
         return null;
     }
 
     @Override
     public void updateDashboard() {
-        // TODO Auto-generated method stub
-
+        SmartDashboard.putNumber("Right Enc", getRightDistance());
+        SmartDashboard.putNumber("Left Enc", getLeftDistance());
+        SmartDashboard.putNumber("Angle", getAngle());
     }
 
     public void drive(double left, double right) {
@@ -90,6 +96,10 @@ public class Drivetrain extends Subsystem {
 
     public double getLeftDistance() {
         return mLeftDistance;
+    }
+
+    public double getAvgDistance() {
+        return mAvgDistance;
     }
 
     public double getAngle() {
