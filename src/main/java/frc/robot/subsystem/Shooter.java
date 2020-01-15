@@ -11,6 +11,9 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
+import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
 
 /**
@@ -23,6 +26,9 @@ public class Shooter extends Subsystem {
     private WPI_TalonSRX mShooterMaster;
     private WPI_TalonSRX mShooterSlave;
 
+    private DoubleSolenoid mHood;
+
+    private double mVelocity;
 
     public static Shooter getInstance() {
         if (mInstance == null) {
@@ -33,9 +39,10 @@ public class Shooter extends Subsystem {
 
     @Override
     public void init() {
-        // TODO Auto-generated method stub
         mShooterMaster = new WPI_TalonSRX(Constants.SHOOTER_CAN[0]);
         mShooterSlave = new WPI_TalonSRX(Constants.SHOOTER_CAN[1]);
+
+        mHood = new DoubleSolenoid(Constants.HOOD_PISTON[0], Constants.HOOD_PISTON[1]);
 
         mShooterMaster.configFactoryDefault();
         mShooterSlave.configFactoryDefault();
@@ -44,35 +51,40 @@ public class Shooter extends Subsystem {
         
         mShooterMaster.setNeutralMode(NeutralMode.Coast);
         mShooterSlave.setNeutralMode(NeutralMode.Coast);
+
+        // TO-DO:
+        // configure sensor
     }
 
     @Override
     public void zeroSensors() {
+       
+    }
+
+    @Override
+    public void stop() {
         mShooterMaster.set(ControlMode.PercentOutput, 0);
         mShooterSlave.set(ControlMode.PercentOutput, 0);
     }
 
     @Override
-    public void stop() {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
     public Boolean checkSystem() {
-        // TODO Auto-generated method stub
         return true;
     }
 
     @Override
     public void updateDashboard() {
-        // TODO Auto-generated method stub
-
+        SmartDashboard.putNumber("Shooter Speed", getShooterSpeed());
     }
 
-    public void shootCell(double speed) {
+    public void shootCellOpen(double speed) {
         mShooterMaster.set(ControlMode.PercentOutput, speed);
         mShooterSlave.set(ControlMode.PercentOutput, speed);
+    }
+
+    // closed loop control
+    public void shootCellClosed(double _velocity) {
+        mShooterMaster.set(ControlMode.Velocity, _velocity);
     }
 
     public void vomitCell(double speed) {
@@ -80,8 +92,28 @@ public class Shooter extends Subsystem {
         mShooterSlave.set(ControlMode.PercentOutput, -speed);
     }
 
-    public void getShooterSpeed() {
+    // shooter hood
+    public void controlHood(boolean state) {
+        if (state) {
+            mHood.set(Value.kForward);
+        } else {
+            mHood.set(Value.kReverse);
+        }
+    }
 
+    // return shooter velocity
+    public double getShooterSpeed() {
+        // convert RPM to velocity
+        return mVelocity;
+    }
+
+    // bang-bang control
+    public void BangBangControl(double value) {
+        if (getShooterSpeed() < value) {
+            shootCellOpen(1);
+        } else {
+            shootCellOpen(0);
+        }
     }
 
 }
