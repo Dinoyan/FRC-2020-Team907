@@ -44,7 +44,7 @@ public class Robot extends TimedRobot {
 
    private ITeleopLooper mTeleopLooper;
 
-   private byte mAutoMode;
+   private byte mAutoMode = 0;
 
   @Override
   public void robotInit() {
