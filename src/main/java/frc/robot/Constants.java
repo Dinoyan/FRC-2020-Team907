@@ -7,9 +7,6 @@
 
 package frc.robot;
 
-/**
- * Add your docs here.
- */
 public class Constants {
 
     // ****************** DRIVETRAIN ***********************
@@ -24,6 +21,7 @@ public class Constants {
     // ******************** SHOOTER ************************
     public final static int[] SHOOTER_CAN = {5, 6};
 
+    public final static int[] HOOD_PISTON = {6, 7};
 
     // ******************* CW PANEL ************************
     public final static int CW_CAN = 7;
@@ -33,6 +31,8 @@ public class Constants {
     public final static int[] INTAKE_MOTORS = {8, 9};
     public final static int[] FRONT_PISTONS = {0, 1};
     public final static int[] BACK_PISTONS = {2, 3};
+
+    public final static double INTAKE_ROLLER_SPEED = 1.0;
 
     // ****************** JOYSTICKS ************************
     public final static int DRIVE_STICK = 0;
@@ -46,7 +46,13 @@ public class Constants {
     public final static int FRONT_INTAKE_PISTON_BTN = 6;
     public final static int BACK_INTAKE_PISTON_BTN = 5;
 
+    public final static int INTAKE_ROLLERS_BTN = 7;
+
     // ********************* PID ***************************
+    public final static double[] DRIVE_PID  = {0.1, 0.1, 0.1};
+    public final static double[] TURN_PID = {0.1, 0.1, 0.1};
+    public final static double[] CW_PID = {0.1, 0.1, 0.1};
+    public final static double[] SHOOTER_PID = {0.1, 0.1, 0.1};
 
 
     // ********************* MISC ***************************
