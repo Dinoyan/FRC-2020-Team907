@@ -29,6 +29,8 @@ public class Constants {
     public final static int[] FRONT_PISTONS = {0, 1};
     public final static int[] BACK_PISTONS = {2, 3};
 
+    public final static int CONVEYOR_MOTOR = 10;
+
     public final static double INTAKE_ROLLER_SPEED = 1.0;
     public final static double VOMIT_SPEED = -0.5;
 
