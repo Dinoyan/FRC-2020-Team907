@@ -62,9 +62,9 @@ public class Robot extends TimedRobot {
     mTeleopLooper = ITeleopLooper.getInstance();
 
     mSubsystemManager.setSystem (
-      mDrive, 
+      mDrive,
       mShooter, 
-      mIntake, 
+      mIntake,
       mHook,
       mCWPanel
     );
