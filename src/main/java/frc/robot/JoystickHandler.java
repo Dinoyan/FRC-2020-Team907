@@ -45,27 +45,35 @@ public class JoystickHandler {
     }
 
     public boolean getCWButton() {
-        return mShootStick.getRawButtonPressed(Constants.CW_BUTTON);
+        return mShootStick.getRawButton(Constants.CW_BUTTON);
     }
 
-    public boolean getFrontIntakePiston() {
-        return mShootStick.getRawButtonPressed(Constants.FRONT_INTAKE_PISTON_BTN);
+    public boolean getFrontIntake() {
+        return mShootStick.getRawButtonPressed(Constants.FRONT_INTAKE);
     }
 
-    public boolean getBackIntakePiston() {
-        return mShootStick.getRawButtonPressed(Constants.BACK_INTAKE_PISTON_BTN);
+    public boolean getBackIntake() {
+        return mShootStick.getRawButtonPressed(Constants.BACK_INTAKE);
     }
 
-    public boolean getIntakeRollersBtn() {
-        return mShootStick.getRawButtonPressed(Constants.INTAKE_ROLLERS_BTN);
+    public double getHookAxis() {
+        return mShootStick.getRawAxis(Constants.CLIMB_AXIS);
     }
 
-    public void getHookBtn() {
-
+    public boolean getShootBtn() {
+        return mShootStick.getRawButton(Constants.SHOOT_AUTO);
     }
 
-    public void getShootBtn() {
-        
+    public boolean getAutoAlign() {
+        return mShootStick.getRawButton(Constants.AUTO_ALIGN);
+    }
+
+    public double getManuallyShoot() {
+        return mShootStick.getRawAxis(Constants.SHOOT_MANUALLY_AXIS);
+    }
+
+    public double getEject() {
+        return mShootStick.getRawAxis(Constants.EJECT);
     }
 
 }
