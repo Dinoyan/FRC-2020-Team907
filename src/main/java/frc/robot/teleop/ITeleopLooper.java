@@ -9,6 +9,7 @@ package frc.robot.teleop;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
 import frc.robot.JoystickHandler;
 import frc.robot.subsystem.CWPanel;
@@ -112,7 +113,10 @@ public class ITeleopLooper implements ITeleop {
         double shootValue = mJoystick.getManuallyShoot();
 
         if (shootValue > 0.1) {
+            mShooter.controlHood(true);
             mShooter.shootCellOpen(shootValue);
+        } else {
+            mShooter.controlHood(false);
         }
     }
 
@@ -151,6 +155,8 @@ public class ITeleopLooper implements ITeleop {
         char _colour = '?';
         mGameData = DriverStation.getInstance().getGameSpecificMessage();
         _colour = mGameData.charAt(0);
+
+        SmartDashboard.putString("FMS Data", "test");
         return _colour;
     }
 }
