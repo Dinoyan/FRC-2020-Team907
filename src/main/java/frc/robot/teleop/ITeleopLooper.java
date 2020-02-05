@@ -8,6 +8,7 @@
 package frc.robot.teleop;
 
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Timer;
 import frc.robot.Constants;
 import frc.robot.JoystickHandler;
 import frc.robot.subsystem.CWPanel;
@@ -34,8 +35,10 @@ public class ITeleopLooper implements ITeleop {
 
     boolean mCWButtonPressed = false;
 
-    boolean mFrontIntakeState = true;
-    boolean mBackIntakeState = true;
+    // boolean mFrontIntakeState = true;
+    // boolean mBackIntakeState = true;
+
+    private Timer teleopTime;
 
     public static ITeleopLooper getInstance() {
         if (mInstance == null){
@@ -59,6 +62,8 @@ public class ITeleopLooper implements ITeleop {
         mIntake.init();
         mHook.init();
         mCWPanel.init();
+
+        teleopTime.start();
     }
 
     @Override
@@ -78,29 +83,43 @@ public class ITeleopLooper implements ITeleop {
     }
 
     private void intakeEnabledLoop() {
-        // intake extend / retract 
-        if (mJoystick.getFrontIntakePiston()) {
-            mFrontIntakeState = !mFrontIntakeState;
-            mIntake.frontIntake(mFrontIntakeState);
-        }
-
-        if (mJoystick.getBackIntakePiston()) {
-            mBackIntakeState = !mBackIntakeState;
-            mIntake.backIntake(mBackIntakeState);
-        }
-
-        // intake rollers
-        if (mJoystick.getIntakeRollersBtn()) {
+        // intaking cell
+        if (mJoystick.getFrontIntake()) {
+            mIntake.frontIntake(true);
+            // Move this value to constants
             mIntake.intakeCell(Constants.INTAKE_ROLLER_SPEED);
+        } else {
+            mIntake.frontIntake(false);
+            mIntake.intakeCell(0);
+        }
+
+        if (mJoystick.getBackIntake()) {
+            mIntake.backIntake(true);
+            mIntake.intakeCell(Constants.INTAKE_ROLLER_SPEED);
+        } else {
+            mIntake.backIntake(false);
+            mIntake.intakeCell(0);
+        }
+
+        // eject cell
+        if (mJoystick.getEject() > 0.1) {
+            mIntake.ejectCell(Constants.VOMIT_SPEED);
         }
     }
 
     private void shooterEnabledLoop() {
-        
+        // manual shooter
+        double shootValue = mJoystick.getManuallyShoot();
+
+        if (shootValue > 0.1) {
+            mShooter.shootCellOpen(shootValue);
+        }
     }
 
     private void hookEnabledLoop() {
-
+        if (teleopTime.get() > 120) {
+            mHook.pullUp(mJoystick.getHookAxis());
+        }
     }
 
     private void CWEnabledLoop() {
