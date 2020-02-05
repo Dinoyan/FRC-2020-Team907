@@ -70,12 +70,12 @@ public class Drivetrain extends Subsystem {
     @Override
     public void zeroSensors() {
         mRMaster.setSelectedSensorPosition(0);
+        mLMaster.setSelectedSensorPosition(0);
     }
 
     @Override
     public void stop() {
         drive(0, 0);
-
     }
 
     @Override
@@ -95,14 +95,17 @@ public class Drivetrain extends Subsystem {
     }
 
     public double getRightDistance() {
+        mRightDistance = mRMaster.getSelectedSensorPosition();
         return mRightDistance;
     }
 
     public double getLeftDistance() {
+        mLeftDistance = mLMaster.getSelectedSensorPosition();
         return mLeftDistance;
     }
 
     public double getAvgDistance() {
+        mAvgDistance = (mLeftDistance + mRightDistance) / 2;
         return mAvgDistance;
     }
 
