@@ -22,6 +22,11 @@ public class AutoStateMachine {
 
     // ************ AUTO MODES ***************
     private byte DEFAULT = 0;
+    private byte MIDDLE_SHOOT = 1;
+    private byte RIGHT_SHOOT = 2;
+    private byte LEFT_SHOOT = 3;
+    private byte RIGHT_TRENCH_PICKUP = 4;
+    private byte LEFT_TRENCH_PICKUP = 5;
    
     // ************* STATES ******************
     private byte DRIVE = 0;
@@ -29,6 +34,7 @@ public class AutoStateMachine {
     private byte SHOOT = 2;
     private byte INTAKE = 3;
     private byte WAIT = 4;
+    private byte DRIVE_AND_INTAKE = 5;
 
     private byte currentState;
     private byte currentStateIndex = 0;
@@ -74,8 +80,15 @@ public class AutoStateMachine {
         byte stateCounter = 0;
 
         if (DEFAULT == mode) {
+            nextStateArray[stateCounter] = DRIVE;
+            stateCounter++;
+        } else if (MIDDLE_SHOOT == mode) {
 
-        }
+        } else if (RIGHT_SHOOT == mode) {
+
+        } else if (LEFT_SHOOT == mode) {
+
+        } 
 
         setCurrentState(nextStateArray[currentStateIndex]);
     }
@@ -86,12 +99,14 @@ public class AutoStateMachine {
 
     public void autonomousEnabledLoop() {
         if (currentState == DRIVE) {
-
+            drive(4);
         } else if (currentState == TURN) {
 
         } else if (currentState == SHOOT) {
-
+            shoot();
         } else if (currentState == INTAKE) {
+            intake();
+        } else if (currentState == DRIVE_AND_INTAKE) {
 
         }
     }
@@ -148,7 +163,11 @@ public class AutoStateMachine {
     }
 
     private void intake() {
+        boolean cond = infLoopChecker();
 
+        if (!cond) {
+
+        }
     }
 
     private void shoot() {
