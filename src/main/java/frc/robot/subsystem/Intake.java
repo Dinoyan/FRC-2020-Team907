@@ -40,6 +40,8 @@ public class Intake extends Subsystem{
         mFrontMotor = new WPI_TalonSRX(Constants.INTAKE_MOTORS[0]);
         mBackMotor = new WPI_TalonSRX(Constants.INTAKE_MOTORS[1]);
 
+        mConveyor = new WPI_TalonSRX(Constants.CONVEYOR_MOTOR);
+
         mFrontPistons = new DoubleSolenoid(Constants.FRONT_PISTONS[0], Constants.FRONT_PISTONS[1]);
         mBackPistons = new DoubleSolenoid(Constants.BACK_PISTONS[0], Constants.BACK_PISTONS[1]);
     }
@@ -53,6 +55,7 @@ public class Intake extends Subsystem{
     public void stop() {
         mFrontMotor.stopMotor();
         mBackMotor.stopMotor();
+        mConveyor.stopMotor();
     }
 
     @Override
@@ -62,11 +65,11 @@ public class Intake extends Subsystem{
 
     @Override
     public void updateDashboard() {
-        
+    
     }
 
     public void conveyorControl(double speed) {
-
+        mConveyor.set(speed);
     }
 
     public void intakeCell(double speed) {
