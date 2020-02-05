@@ -8,6 +8,7 @@
 package frc.robot.subsystem;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
@@ -54,11 +55,16 @@ public class Shooter extends Subsystem {
 
         // TO-DO:
         // configure sensor
+        mShooterMaster.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute, 0, 10);
+
+        mShooterMaster.config_kP(0, 0.1);
+        mShooterMaster.config_kI(0, 0);
+        mShooterMaster.config_kD(0, 0.1);
     }
 
     @Override
     public void zeroSensors() {
-       
+       mShooterMaster.setSelectedSensorPosition(0);
     }
 
     @Override
@@ -103,7 +109,7 @@ public class Shooter extends Subsystem {
 
     // return shooter velocity
     public double getShooterSpeed() {
-        // convert RPM to velocity
+        mVelocity = mShooterMaster.getSelectedSensorVelocity();
         return mVelocity;
     }
 
