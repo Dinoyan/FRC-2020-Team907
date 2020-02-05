@@ -32,7 +32,7 @@ public class Drivetrain extends Subsystem {
     private WPI_TalonFX mRMaster;
     private WPI_TalonFX mRSlave;
 
-    private DifferentialDrive mDrive = new DifferentialDrive(mLMaster, mRMaster);
+    private DifferentialDrive mDrive;
 
     public static Drivetrain getInstance() {
         if (mInstance == null) {
@@ -48,6 +48,9 @@ public class Drivetrain extends Subsystem {
         mRMaster = new WPI_TalonFX(Constants.DRIVE_RIGHT[0]);
         mRSlave = new WPI_TalonFX(Constants.DRIVE_RIGHT[1]);
 
+        mDrive = new DifferentialDrive(mLMaster, mRMaster);
+
+
         mLMaster.configFactoryDefault();
         mLSlave.configFactoryDefault();
         mRMaster.configFactoryDefault();
@@ -61,6 +64,7 @@ public class Drivetrain extends Subsystem {
         // TO-DO
         // config encoders
         mRMaster.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute, 0, 10);
+
     }
 
     @Override
