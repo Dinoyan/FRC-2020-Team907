@@ -20,6 +20,8 @@ public class Intake extends Subsystem{
 
     private static Intake mInstance = null;
 
+    private WPI_TalonSRX mConveyor;
+
     private WPI_TalonSRX mFrontMotor;
     private WPI_TalonSRX mBackMotor;
 
@@ -61,6 +63,10 @@ public class Intake extends Subsystem{
     @Override
     public void updateDashboard() {
         
+    }
+
+    public void conveyorControl(double speed) {
+
     }
 
     public void intakeCell(double speed) {
