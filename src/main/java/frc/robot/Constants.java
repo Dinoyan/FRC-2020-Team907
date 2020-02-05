@@ -13,19 +13,16 @@ public class Constants {
     public final static int[] DRIVE_RIGHT = {0, 1};
     public final static int[] DRIVE_LEFT = {2, 3};
     
-
     // ********************* HOOK **************************
     public final static int HOOK_CAN = 4;
-
 
     // ******************** SHOOTER ************************
     public final static int[] SHOOTER_CAN = {5, 6};
 
-    public final static int[] HOOD_PISTON = {6, 7};
+    public final static int[] HOOD_PISTON = {4, 5};
 
     // ******************* CW PANEL ************************
     public final static int CW_CAN = 7;
-
 
     // ******************** INTAKE *************************
     public final static int[] INTAKE_MOTORS = {8, 9};
@@ -33,6 +30,7 @@ public class Constants {
     public final static int[] BACK_PISTONS = {2, 3};
 
     public final static double INTAKE_ROLLER_SPEED = 1.0;
+    public final static double VOMIT_SPEED = -0.5;
 
     // ****************** JOYSTICKS ************************
     public final static int DRIVE_STICK = 0;
@@ -41,19 +39,23 @@ public class Constants {
     public final static int DRIVE_LEFT_AXIS = 1;
     public final static int DRIVE_RIGHT_AXIS = 5;
 
-    public final static int CW_BUTTON = 3;
+    public final static int CW_BUTTON = 2;
 
-    public final static int FRONT_INTAKE_PISTON_BTN = 6;
-    public final static int BACK_INTAKE_PISTON_BTN = 5;
+    public final static int FRONT_INTAKE = 6;
+    public final static int BACK_INTAKE = 5;
+    public final static int EJECT = 6;
 
-    public final static int INTAKE_ROLLERS_BTN = 7;
+    public final static int SHOOT_AUTO = 4;
+    public final static int SHOOT_MANUALLY_AXIS = 3;
+    public final static int AUTO_ALIGN = 1;
+
+    public final static int CLIMB_AXIS = 2;
 
     // ********************* PID ***************************
     public final static double[] DRIVE_PID  = {0.1, 0.1, 0.1};
     public final static double[] TURN_PID = {0.1, 0.1, 0.1};
     public final static double[] CW_PID = {0.1, 0.1, 0.1};
     public final static double[] SHOOTER_PID = {0.1, 0.1, 0.1};
-
 
     // ********************* MISC ***************************
     public final static int AUTO_TIME = 15;
