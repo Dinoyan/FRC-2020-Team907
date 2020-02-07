@@ -15,7 +15,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 public class AutoSelector {
 
     private static final String kJustDrive = "Default";
-    private static final String kCenterShoot = "Center Shoot";
+    private static final String kMiddleShoot = "Middle Shoot";
 
     private final SendableChooser<String> mChooser = new SendableChooser<>();
 
@@ -34,7 +34,7 @@ public class AutoSelector {
 
     public AutoSelector() {
         mChooser.setDefaultOption("Just Drive", kJustDrive);
-        mChooser.addOption("Center Shoot", kCenterShoot);
+        mChooser.addOption("Center Shoot", kMiddleShoot);
     }
 
     public byte getAutoMode() {
@@ -45,7 +45,7 @@ public class AutoSelector {
                 mMode = 0;
                 break;
             
-            case kCenterShoot:
+            case kMiddleShoot:
                 mMode = 1;
                 break;
         }
