@@ -10,7 +10,9 @@ package frc.robot.subsystem;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
+import com.kauailabs.navx.frc.AHRS;
 
+import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
@@ -33,6 +35,8 @@ public class Drivetrain extends Subsystem {
     private WPI_TalonFX mRSlave;
 
     private DifferentialDrive mDrive;
+
+    private AHRS navx;
 
     public static Drivetrain getInstance() {
         if (mInstance == null) {
@@ -65,6 +69,8 @@ public class Drivetrain extends Subsystem {
         // config encoders
         mRMaster.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute, 0, 10);
 
+        navx = new AHRS(SPI.Port.kMXP);
+
     }
 
     @Override
@@ -85,8 +91,8 @@ public class Drivetrain extends Subsystem {
 
     @Override
     public void updateDashboard() {
-        SmartDashboard.putNumber("Right Enc", getRightDistance());
-        SmartDashboard.putNumber("Left Enc", getLeftDistance());
+        SmartDashboard.putNumber("Right Pos", getRightDistance());
+        SmartDashboard.putNumber("Left Pos", getLeftDistance());
         SmartDashboard.putNumber("Angle", getAngle());
     }
 
@@ -110,6 +116,7 @@ public class Drivetrain extends Subsystem {
     }
 
     public double getAngle() {
+        mAngle = navx.getAngle();
         return mAngle;
     }
 
