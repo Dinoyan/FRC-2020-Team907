@@ -25,8 +25,8 @@ public class AutoStateMachine {
     private byte MIDDLE_SHOOT = 1;
     private byte RIGHT_SHOOT = 2;
     private byte LEFT_SHOOT = 3;
-    private byte RIGHT_TRENCH_PICKUP = 4;
-    private byte LEFT_TRENCH_PICKUP = 5;
+    // private byte RIGHT_TRENCH_PICKUP = 4;
+    // private byte LEFT_TRENCH_PICKUP = 5;
    
     // ************* STATES ******************
     private byte DRIVE = 0;
@@ -98,16 +98,19 @@ public class AutoStateMachine {
     }
 
     public void autonomousEnabledLoop() {
-        if (currentState == DRIVE) {
-            drive(4);
-        } else if (currentState == TURN) {
-
-        } else if (currentState == SHOOT) {
-            shoot();
-        } else if (currentState == INTAKE) {
-            intake();
-        } else if (currentState == DRIVE_AND_INTAKE) {
-
+        boolean cond = infLoopChecker();
+        if (cond) {
+            if (currentState == DRIVE) {
+                drive(4);
+            } else if (currentState == TURN) {
+                turn(90);
+            } else if (currentState == SHOOT) {
+                shoot();
+            } else if (currentState == INTAKE) {
+                intake();
+            } else if (currentState == DRIVE_AND_INTAKE) {
+    
+            }
         }
     }
 
@@ -121,53 +124,44 @@ public class AutoStateMachine {
     // **************************************
     // *********** AUTO ACTIONS *************
     // **************************************
-
+    
     private void drive(double distance) {
         mDrivePID.setSetpoint(distance);
-        Boolean cond = infLoopChecker();
         boolean onTarget = mDrivePID.onTarget(mDrive.getRightDistance());
         
-        if (!cond) {
-            if (!onTarget) {
+        if (!onTarget) {
             onTarget = mDrivePID.onTarget(mDrive.getRightDistance());
-            cond = infLoopChecker();
             double value = mDrivePID.getOutput(mDrive.getRightDistance());
             mDrive.drive(value * .5, value * .5);
-            } else {
-                mDrive.drive(0, 0);
-                currentStateIndex++;
-                setCurrentState(nextStateArray[currentStateIndex]);
-            }
+        } else {
+            mDrive.drive(0, 0);
+            currentStateIndex++;
+            setCurrentState(nextStateArray[currentStateIndex]);
         }
+
         mDrivePID.reset();
     }
 
     private void turn(double angle) {
         mTurnPID.setSetpoint(angle);
-        boolean cond = infLoopChecker();
+
         boolean onTarget = mTurnPID.onTarget(mDrive.getAngle());
 
-        if (!cond) {
-            if (!onTarget) {
+        if (!onTarget) {
             onTarget = mTurnPID.onTarget(mDrive.getAngle());
-            cond = infLoopChecker();
             double value = mTurnPID.getOutput(mDrive.getAngle());
             mDrive.drive(-value * .5, value * .5);
-            } else {
-                mDrive.drive(0, 0);
-                currentStateIndex++;
-                setCurrentState(nextStateArray[currentStateIndex]);
-            }
+        } else {
+            mDrive.drive(0, 0);
+            currentStateIndex++;
+            setCurrentState(nextStateArray[currentStateIndex]);
         }
+    
         mTurnPID.reset();
     }
 
     private void intake() {
-        boolean cond = infLoopChecker();
-
-        if (!cond) {
-
-        }
+       
     }
 
     private void shoot() {
