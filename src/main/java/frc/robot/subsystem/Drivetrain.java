@@ -54,7 +54,6 @@ public class Drivetrain extends Subsystem {
 
         mDrive = new DifferentialDrive(mLMaster, mRMaster);
 
-
         mLMaster.configFactoryDefault();
         mLSlave.configFactoryDefault();
         mRMaster.configFactoryDefault();
@@ -67,10 +66,9 @@ public class Drivetrain extends Subsystem {
 
         // TO-DO
         // config encoders
-        mRMaster.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute, 0, 10);
+        mRMaster.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor, 0, 10);
 
         navx = new AHRS(SPI.Port.kMXP);
-
     }
 
     @Override
@@ -102,6 +100,7 @@ public class Drivetrain extends Subsystem {
 
     public double getRightDistance() {
         mRightDistance = mRMaster.getSelectedSensorPosition();
+        // mRMaster.getSensorCollection().getIntegratedSensorPosition();
         return mRightDistance;
     }
 

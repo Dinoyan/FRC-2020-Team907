@@ -109,7 +109,8 @@ public class AutoStateMachine {
             } else if (currentState == INTAKE) {
                 intake();
             } else if (currentState == DRIVE_AND_INTAKE) {
-    
+                drive(4);
+                intake();
             }
         }
     }
@@ -124,7 +125,7 @@ public class AutoStateMachine {
     // **************************************
     // *********** AUTO ACTIONS *************
     // **************************************
-    
+
     private void drive(double distance) {
         mDrivePID.setSetpoint(distance);
         boolean onTarget = mDrivePID.onTarget(mDrive.getRightDistance());
@@ -165,7 +166,14 @@ public class AutoStateMachine {
     }
 
     private void shoot() {
-        
+        boolean doneShooting = false;
+
+        if (!doneShooting) {
+
+        } else {
+            currentStateIndex++;
+            setCurrentState(nextStateArray[currentStateIndex]);
+        }
     }
     
 }

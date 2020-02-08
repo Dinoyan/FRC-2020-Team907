@@ -36,6 +36,17 @@ public class ITeleopLooper implements ITeleop {
 
     boolean mCWButtonPressed = false;
 
+    // shooter states
+    // private enum mShooterState {
+    //     SHOOT,
+    //     ALIGN,
+    //     WAIT_FOR_VEL,
+    //     MOVE_CONVEYOR,
+    //     MOVE_INTAKE,
+    //     LIFT_HOOD,
+    //     STOP
+    // };
+
     // boolean mFrontIntakeState = true;
     // boolean mBackIntakeState = true;
 
@@ -115,10 +126,21 @@ public class ITeleopLooper implements ITeleop {
         if (shootValue > 0.1) {
             mShooter.controlHood(true);
             mShooter.shootCellOpen(shootValue);
+            mIntake.conveyorControl(0.3);
+            mIntake.intakeCell(0.2);
         } else {
             mShooter.controlHood(false);
+            mIntake.conveyorControl(0);
+            mIntake.conveyorControl(0);
         }
+
+        // TO-DO
+        // auto align & velocity control
     }
+
+    // private void shooterStateController() {
+
+    // }
 
     private void hookEnabledLoop() {
         if (teleopTime.get() > 120) {
