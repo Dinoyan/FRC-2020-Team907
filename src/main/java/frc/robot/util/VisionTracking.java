@@ -21,6 +21,10 @@ public class VisionTracking {
     private double mY;
     private double mArea;
 
+    private double kLimelightHeight;
+    private double kLimelightAngle;
+    private double kGoalHeigh;
+   
     NetworkTable mTable;
 
     private static VisionTracking mInstance = null;
@@ -46,6 +50,7 @@ public class VisionTracking {
     }
 
     public double vGetDistance() {
+        mDistance = (kGoalHeigh - kLimelightHeight) / Math.tan(kLimelightAngle + this.getY());
         return mDistance;
     }
 
