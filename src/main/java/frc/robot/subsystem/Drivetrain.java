@@ -13,7 +13,6 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.wpilibj.SPI;
-import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
 
@@ -34,7 +33,7 @@ public class Drivetrain extends Subsystem {
     private WPI_TalonFX mRMaster;
     private WPI_TalonFX mRSlave;
 
-    private DifferentialDrive mDrive;
+    // private DifferentialDrive mDrive;
 
     private AHRS navx;
 
@@ -52,7 +51,7 @@ public class Drivetrain extends Subsystem {
         mRMaster = new WPI_TalonFX(Constants.DRIVE_RIGHT[0]);
         mRSlave = new WPI_TalonFX(Constants.DRIVE_RIGHT[1]);
 
-        mDrive = new DifferentialDrive(mLMaster, mRMaster);
+        // mDrive = new DifferentialDrive(mLMaster, mRMaster);
 
         mLMaster.configFactoryDefault();
         mLSlave.configFactoryDefault();
@@ -62,7 +61,7 @@ public class Drivetrain extends Subsystem {
         mLMaster.follow(mLSlave);
         mRMaster.follow(mRSlave);
 
-        mDrive.setRightSideInverted(false);
+        // mDrive.setRightSideInverted(true);
 
         // TO-DO
         // config encoders
@@ -75,6 +74,7 @@ public class Drivetrain extends Subsystem {
     public void zeroSensors() {
         mRMaster.setSelectedSensorPosition(0);
         mLMaster.setSelectedSensorPosition(0);
+        navx.reset();
     }
 
     @Override
@@ -95,17 +95,22 @@ public class Drivetrain extends Subsystem {
     }
 
     public void drive(double left, double right) {
-        mDrive.tankDrive(left, right);
+       // mDrive.tankDrive(left, right);
+       this.mRMaster.set(-right);
+       this.mRSlave.set(-right);
+
+       this.mLMaster.set(left);
+       this.mLSlave.set(left);
     }
 
     public double getRightDistance() {
-        mRightDistance = mRMaster.getSelectedSensorPosition();
-        // mRMaster.getSensorCollection().getIntegratedSensorPosition();
+        // mRightDistance = mRMaster.getSelectedSensorPosition() * ((1.0/2048) * (10.0/64) * 4 * Math.PI);
+        mRightDistance = mRMaster.getSensorCollection().getIntegratedSensorPosition() * ((1.0/2048) * (10.0/64) * 4 * Math.PI);;
         return mRightDistance;
     }
 
     public double getLeftDistance() {
-        mLeftDistance = mLMaster.getSelectedSensorPosition();
+        mLeftDistance = mLMaster.getSelectedSensorPosition() * ((1.0/2048) * (10.0/64) * 4 * Math.PI);
         return mLeftDistance;
     }
 
