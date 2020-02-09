@@ -74,9 +74,9 @@ public class Intake extends Subsystem{
     }
 
     public void intakeCell(double speed) {
-        // if (mFrontPistons.get() == Value.kForward) {
-        //     mFrontMotor.set(speed);
-        // }
+        if (mFrontPistons.get() == Value.kReverse) {
+             mFrontMotor.set(speed);
+        }
 
         if (mBackPistons.get() == Value.kForward) {
              mBackMotor.set(speed);
