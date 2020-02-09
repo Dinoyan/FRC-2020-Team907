@@ -7,10 +7,10 @@
 
 package frc.robot.subsystem;
 
-import com.ctre.phoenix.motorcontrol.NeutralMode;
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+// import com.ctre.phoenix.motorcontrol.NeutralMode;
+// import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
-import frc.robot.Constants;
+// import frc.robot.Constants;
 
 /**
  * Add your docs here.
@@ -19,7 +19,7 @@ public class Hook extends Subsystem {
 
     private static Hook mInstance = null;
 
-    WPI_TalonSRX mHookMotor;
+    // WPI_TalonSRX mHookMotor;
 
     public static Hook getInstance() {
         if (mInstance == null) {
@@ -30,8 +30,8 @@ public class Hook extends Subsystem {
 
     @Override
     public void init() {
-        mHookMotor = new WPI_TalonSRX(Constants.HOOK_CAN);
-        mHookMotor.configFactoryDefault();
+        // mHookMotor = new WPI_TalonSRX(Constants.HOOK_CAN);
+        // mHookMotor.configFactoryDefault();
     }
 
     @Override
@@ -41,7 +41,7 @@ public class Hook extends Subsystem {
 
     @Override
     public void stop() {
-        mHookMotor.stopMotor();
+        // mHookMotor.stopMotor();
     }
 
     @Override
@@ -55,19 +55,19 @@ public class Hook extends Subsystem {
     }
 
     public void pullUp(double speed) {
-        mHookMotor.set(speed);
+        // mHookMotor.set(speed);
     }
 
     public void releaseDown(double speed) {
-        mHookMotor.set(-speed);
+        // mHookMotor.set(-speed);
     }
 
     public void switchModeBrake() {
-        mHookMotor.setNeutralMode(NeutralMode.Brake);
+       // mHookMotor.setNeutralMode(NeutralMode.Brake);
     }
 
     public void switchModeCoast() {
-        mHookMotor.setNeutralMode(NeutralMode.Coast);
+        // mHookMotor.setNeutralMode(NeutralMode.Coast);
     }
 
     public void lock() {
