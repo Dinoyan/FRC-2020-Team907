@@ -12,7 +12,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
 import frc.robot.JoystickHandler;
-import frc.robot.subsystem.CWPanel;
+// import frc.robot.subsystem.CWPanel;
 import frc.robot.subsystem.Drivetrain;
 import frc.robot.subsystem.Hook;
 import frc.robot.subsystem.Intake;
@@ -28,7 +28,7 @@ public class ITeleopLooper implements ITeleop {
     private Shooter mShooter;
     private Intake mIntake;
     private Hook mHook;
-    private CWPanel mCWPanel;
+    // private CWPanel mCWPanel;
 
     private JoystickHandler mJoystick;
 
@@ -50,7 +50,7 @@ public class ITeleopLooper implements ITeleop {
     // boolean mFrontIntakeState = true;
     // boolean mBackIntakeState = true;
 
-    private Timer teleopTime;
+    private Timer teleopTime = new Timer();
 
     public static ITeleopLooper getInstance() {
         if (mInstance == null){
@@ -64,18 +64,12 @@ public class ITeleopLooper implements ITeleop {
         mDrive = Drivetrain.getInstance();
         mShooter = Shooter.getInstance();
         mIntake = Intake.getInstance();
-        mHook = Hook.getInstance();
-        mCWPanel = CWPanel.getInstance();
+        // mHook = Hook.getInstance();
+        // mCWPanel = CWPanel.getInstance();
 
         mJoystick = JoystickHandler.getInstance();
     
-        mDrive.init();
-        mShooter.init();
-        mIntake.init();
-        mHook.init();
-        mCWPanel.init();
-
-        teleopTime.start();
+         teleopTime.start();
     }
 
     @Override
@@ -97,25 +91,25 @@ public class ITeleopLooper implements ITeleop {
     private void intakeEnabledLoop() {
         // intaking cell
         if (mJoystick.getFrontIntake()) {
-            mIntake.frontIntake(true);
+            mIntake.frontIntake(false);
             // Move this value to constants
             mIntake.intakeCell(Constants.INTAKE_ROLLER_SPEED);
         } else {
-            mIntake.frontIntake(false);
+            mIntake.frontIntake(true);
             mIntake.intakeCell(0);
         }
 
         if (mJoystick.getBackIntake()) {
-            mIntake.backIntake(true);
+            mIntake.backIntake(false);
             mIntake.intakeCell(Constants.INTAKE_ROLLER_SPEED);
         } else {
-            mIntake.backIntake(false);
+            mIntake.backIntake(true);
             mIntake.intakeCell(0);
         }
 
         // eject cell
-        if (mJoystick.getEject() > 0.1) {
-            mIntake.ejectCell(Constants.VOMIT_SPEED);
+        if (mJoystick.getEject()) {
+            mIntake.intakeCell(Constants.VOMIT_SPEED);
         }
     }
 
@@ -126,12 +120,12 @@ public class ITeleopLooper implements ITeleop {
         if (shootValue > 0.1) {
             mShooter.controlHood(true);
             mShooter.shootCellOpen(shootValue);
-            mIntake.conveyorControl(0.3);
+            mIntake.conveyorControl(Constants.CONTROL_CONVEYOR_SPEED);
             mIntake.intakeCell(0.2);
         } else {
             mShooter.controlHood(false);
-            mIntake.conveyorControl(0);
-            mIntake.conveyorControl(0);
+            mIntake.conveyorControl(Constants.DEFAULT_CONVEYOR_SPEED);
+            mShooter.shootCellOpen(Constants.DEFAULT_SHOOTER_SPEED);
         }
 
         // TO-DO
@@ -143,33 +137,33 @@ public class ITeleopLooper implements ITeleop {
     // }
 
     private void hookEnabledLoop() {
-        if (teleopTime.get() > 120) {
-            mHook.pullUp(mJoystick.getHookAxis());
-        }
+        // if (teleopTime.get() > 120) {
+        //     mHook.pullUp(mJoystick.getHookAxis());
+        // }
     }
 
     private void CWEnabledLoop() {
-        char FMScolour = getFMSColour();
+        // char FMScolour = getFMSColour();
 
-        if (mJoystick.getCWButton()) {
-            mCWButtonPressed = true;
-        }
+        // if (mJoystick.getCWButton()) {
+        //     mCWButtonPressed = true;
+        // }
 
-        // check which stage by checking fms data for colour
-        // if colour is null then, in stage 1 or 2
-        if (mCWButtonPressed) {
-            if (FMScolour == '?') {
-                mCWPanel.rotate();
-                if (mCWPanel.stagedFinished()) {
-                    mCWButtonPressed = false;
-                }
-            } else {
-                mCWPanel.posToColour(getFMSColour());
-                if (mCWPanel.stagedFinished()) {
-                    mCWButtonPressed = false;
-                }
-            }
-        }
+        // // check which stage by checking fms data for colour
+        // // if colour is null then, in stage 1 or 2
+        // if (mCWButtonPressed) {
+        //     if (FMScolour == '?') {
+        //         mCWPanel.rotate();
+        //         if (mCWPanel.stagedFinished()) {
+        //             mCWButtonPressed = false;
+        //         }
+        //     } else {
+        //         mCWPanel.posToColour(getFMSColour());
+        //         if (mCWPanel.stagedFinished()) {
+        //             mCWButtonPressed = false;
+        //         }
+        //     }
+        // }
     }
 
     // get data from fms
