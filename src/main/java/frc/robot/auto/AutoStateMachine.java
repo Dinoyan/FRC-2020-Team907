@@ -61,18 +61,18 @@ public class AutoStateMachine {
 
     public void init(byte selection) {
         // Subsystems
-         mDrive = Drivetrain.getInstance();
-         mShooter = Shooter.getInstance();
-         mIntake = Intake.getInstance();
+        mDrive = Drivetrain.getInstance();
+        mShooter = Shooter.getInstance();
+        mIntake = Intake.getInstance();
 
-         mDrivePID = new CyberPID();
-         mTurnPID = new CyberPID();
+        mDrivePID = new CyberPID();
+        mTurnPID = new CyberPID();
  
         currentStateIndex = 0;
         setCurrentState(WAIT);
         buildAuto(selection);
         
-         mTimer.start();
+        mTimer.start();
     }
 
     public void buildAuto(byte mode) {
@@ -91,7 +91,6 @@ public class AutoStateMachine {
         } else if (LEFT_SHOOT == mode) {
 
         } 
-
         setCurrentState(nextStateArray[currentStateIndex]);
     }
 
@@ -100,16 +99,15 @@ public class AutoStateMachine {
     }
 
     public void autonomousEnabledLoop() {
-        boolean cond = infLoopChecker();
     
         if (currentState == DRIVE) {
             drive(179);
         } else if (currentState == TURN) {
             turn(90);
         } else if (currentState == SHOOT) {
-            // shoot();
+            shoot();
         } else if (currentState == INTAKE) {
-            // intake();
+            intake();
         } else if (currentState == DRIVE_AND_INTAKE) {
             // drive(4);
             // intake();
@@ -137,15 +135,14 @@ public class AutoStateMachine {
         if (!onTarget) {
             onTarget = mDrivePID.onTarget(mDrive.getRightDistance());
             double value = mDrivePID.getOutput(mDrive.getRightDistance());
-        
             mDrive.drive(value * .5, value * .5);
+
         } else {
             mDrive.drive(0, 0);
             currentStateIndex++;
             setCurrentState(nextStateArray[currentStateIndex]);
             System.out.println(currentStateIndex);
         }
-
         mDrivePID.reset();
     }
 
@@ -158,12 +155,12 @@ public class AutoStateMachine {
             onTarget = mTurnPID.onTarget(mDrive.getAngle());
             double value = mTurnPID.getOutput(mDrive.getAngle());
             mDrive.drive(-value * .5, value * .5);
+
         } else {
             mDrive.drive(0, 0);
             currentStateIndex++;
             setCurrentState(nextStateArray[currentStateIndex]);
         }
-    
         mTurnPID.reset();
     }
 
