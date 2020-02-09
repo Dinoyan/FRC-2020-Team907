@@ -52,9 +52,6 @@ public class ITeleopLooper implements ITeleop {
         STOP
     };
 
-    // boolean mFrontIntakeState = true;
-    // boolean mBackIntakeState = true;
-
     private Timer teleopTime = new Timer();
 
     public static ITeleopLooper getInstance() {
@@ -69,7 +66,7 @@ public class ITeleopLooper implements ITeleop {
         mDrive = Drivetrain.getInstance();
         mShooter = Shooter.getInstance();
         mIntake = Intake.getInstance();
-        // mHook = Hook.getInstance();
+        mHook = Hook.getInstance();
         mCWPanel = CWPanel.getInstance();
 
         mJoystick = JoystickHandler.getInstance();
@@ -138,33 +135,47 @@ public class ITeleopLooper implements ITeleop {
             mCompressor.start();
         }
 
-        shooterStateController(mShooterState.SHOOT);
+        if (mJoystick.getAutoAlign()) {
+            shooterStateController(mShooterState.ALIGN);
+        }
 
+        if (mJoystick.getShootBtn()) {
+            shooterStateController(mShooterState.SHOOT);
+        }
     }
 
     private void shooterStateController(mShooterState state) {
         switch(state) {
             case SHOOT:
+                // pass in desired vel
                 break;
             case ALIGN:
+                double mCorrection = mLimelight.vGetAngle();
+
                 break;
             case WAIT_FOR_VEL:
+                // get vel based on dis
                 break;
             case MOVE_CONVEYOR:
+                mIntake.conveyorControl(Constants.CONTROL_CONVEYOR_SPEED);
                 break;
             case MOVE_INTAKE:
+                mIntake.intakeCell(Constants.INTAKE_ROLLER_SPEED);
                 break;
             case LIFT_HOOD:
+                mShooter.controlHood(true);
                 break;
             case STOP:
-             break;
+                mShooter.stop();
+                mIntake.stop();
+                break;
         }
     }
 
     private void hookEnabledLoop() {
-        // if (teleopTime.get() > 120) {
-        //     mHook.pullUp(mJoystick.getHookAxis());
-        // }
+        if (teleopTime.get() > 120) {
+             mHook.pullUp(mJoystick.getHookAxis());
+        }
     }
 
     private void CWEnabledLoop() {
@@ -195,7 +206,9 @@ public class ITeleopLooper implements ITeleop {
     private char getFMSColour() {
         char _colour = '?';
         mGameData = DriverStation.getInstance().getGameSpecificMessage();
-        _colour = mGameData.charAt(0);
+        if (mGameData.length() > 1) {
+            _colour = mGameData.charAt(0);
+        }
 
         SmartDashboard.putString("FMS Data", "test");
         return _colour;
