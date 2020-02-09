@@ -65,22 +65,24 @@ public class AutoStateMachine {
          mShooter = Shooter.getInstance();
          mIntake = Intake.getInstance();
 
-         mDrive.init();
-         mShooter.init();
-         mIntake.init();
-
-         currentStateIndex = 0;
-         setCurrentState(WAIT);
-         buildAuto(selection);
+         mDrivePID = new CyberPID();
+         mTurnPID = new CyberPID();
+ 
+        currentStateIndex = 0;
+        setCurrentState(WAIT);
+        buildAuto(selection);
         
          mTimer.start();
     }
 
     public void buildAuto(byte mode) {
         byte stateCounter = 0;
-
         if (DEFAULT == mode) {
+            nextStateArray[stateCounter] = TURN;
+            stateCounter++;
             nextStateArray[stateCounter] = DRIVE;
+            stateCounter++;
+            nextStateArray[stateCounter] = WAIT;
             stateCounter++;
         } else if (MIDDLE_SHOOT == mode) {
 
@@ -99,20 +101,22 @@ public class AutoStateMachine {
 
     public void autonomousEnabledLoop() {
         boolean cond = infLoopChecker();
-        if (cond) {
-            if (currentState == DRIVE) {
-                drive(4);
-            } else if (currentState == TURN) {
-                turn(90);
-            } else if (currentState == SHOOT) {
-                shoot();
-            } else if (currentState == INTAKE) {
-                intake();
-            } else if (currentState == DRIVE_AND_INTAKE) {
-                drive(4);
-                intake();
-            }
+    
+        if (currentState == DRIVE) {
+            drive(179);
+        } else if (currentState == TURN) {
+            turn(90);
+        } else if (currentState == SHOOT) {
+            shoot();
+        } else if (currentState == INTAKE) {
+            intake();
+        } else if (currentState == DRIVE_AND_INTAKE) {
+            drive(4);
+            intake();
+        } else if(currentState ==  WAIT){
+            
         }
+    
     }
 
     private boolean infLoopChecker() {
@@ -129,15 +133,17 @@ public class AutoStateMachine {
     private void drive(double distance) {
         mDrivePID.setSetpoint(distance);
         boolean onTarget = mDrivePID.onTarget(mDrive.getRightDistance());
-        
+       
         if (!onTarget) {
             onTarget = mDrivePID.onTarget(mDrive.getRightDistance());
             double value = mDrivePID.getOutput(mDrive.getRightDistance());
+        
             mDrive.drive(value * .5, value * .5);
         } else {
             mDrive.drive(0, 0);
             currentStateIndex++;
             setCurrentState(nextStateArray[currentStateIndex]);
+            System.out.println(currentStateIndex);
         }
 
         mDrivePID.reset();
