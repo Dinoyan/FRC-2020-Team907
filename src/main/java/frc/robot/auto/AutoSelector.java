@@ -8,6 +8,7 @@
 package frc.robot.auto;
 
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  * Add your docs here.
@@ -35,6 +36,8 @@ public class AutoSelector {
     public AutoSelector() {
         mChooser.setDefaultOption("Just Drive", kJustDrive);
         mChooser.addOption("Center Shoot", kMiddleShoot);
+
+        SmartDashboard.putData(mChooser);
     }
 
     public byte getAutoMode() {
