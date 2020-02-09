@@ -95,12 +95,19 @@ public class Drivetrain extends Subsystem {
     }
 
     public void drive(double left, double right) {
-       // mDrive.tankDrive(left, right);
-       this.mRMaster.set(-right);
-       this.mRSlave.set(-right);
 
-       this.mLMaster.set(left);
-       this.mLSlave.set(left);
+       if (Math.abs(left) > 0.05 || Math.abs(right) > 0.05) {
+        this.mRMaster.set(-right);
+        this.mRSlave.set(-right);
+        this.mLMaster.set(left);
+        this.mLSlave.set(left);
+       } else {
+        this.mRMaster.set(0);
+        this.mRSlave.set(0);
+        this.mLMaster.set(0);
+        this.mLSlave.set(0);
+       }
+
     }
 
     public double getRightDistance() {

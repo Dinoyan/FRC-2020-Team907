@@ -10,7 +10,7 @@ package frc.robot;
 import edu.wpi.first.wpilibj.TimedRobot;
 import frc.robot.auto.AutoSelector;
 import frc.robot.auto.AutoStateMachine;
-// import frc.robot.subsystem.CWPanel;
+import frc.robot.subsystem.CWPanel;
 import frc.robot.subsystem.Drivetrain;
 import frc.robot.subsystem.Hook;
 import frc.robot.subsystem.Intake;
@@ -37,7 +37,7 @@ public class Robot extends TimedRobot {
    private Shooter mShooter;
    private Intake mIntake;
    private Hook mHook;
-   // private CWPanel mCWPanel;
+   private CWPanel mCWPanel;
 
    private AutoSelector mAutoSelector;
    private AutoStateMachine mAutoStateMachine;
@@ -54,7 +54,7 @@ public class Robot extends TimedRobot {
     mShooter = Shooter.getInstance();
     mIntake = Intake.getInstance();
     mHook = Hook.getInstance();
-    // mCWPanel = CWPanel.getInstance();
+    mCWPanel = CWPanel.getInstance();
 
     mAutoSelector = AutoSelector.getInstance();
     mAutoStateMachine = AutoStateMachine.getInstance();
@@ -65,7 +65,8 @@ public class Robot extends TimedRobot {
       mDrive,
       mShooter, 
       mIntake,
-      mHook
+      mHook,
+      mCWPanel
     );
 
     mSubsystemManager.init();
@@ -75,7 +76,7 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousInit() {
     mSubsystemManager.zeroAll();
-    // mSubsystemManager.outPutDashboard();
+    mSubsystemManager.outPutDashboard();
 
     mAutoMode = mAutoSelector.getAutoMode();
     mAutoStateMachine.init(mAutoMode);
@@ -93,7 +94,7 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopInit() {
     mSubsystemManager.zeroAll();
-    // mSubsystemManager.outPutDashboard();
+    mSubsystemManager.outPutDashboard();
 
     mTeleopLooper.init();
 
@@ -110,7 +111,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void testInit() {
-    // mSubsystemManager.zeroAll();
+    mSubsystemManager.zeroAll();
   }
 
   @Override

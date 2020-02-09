@@ -90,12 +90,12 @@ public class Shooter extends Subsystem {
 
     // closed loop control
     public void shootCellClosed(double _velocity) {
-        //mShooterMaster.set(ControlMode.Velocity, _velocity);
+        mShooterMaster.set(ControlMode.Velocity, _velocity);
     }
 
     public void vomitCell(double speed) {
-        //mShooterMaster.set(ControlMode.PercentOutput, -speed);
-        //mShooterSlave.set(ControlMode.PercentOutput, -speed);
+        mShooterMaster.set(ControlMode.PercentOutput, -speed);
+        mShooterSlave.set(ControlMode.PercentOutput, -speed);
     }
 
     // shooter hood

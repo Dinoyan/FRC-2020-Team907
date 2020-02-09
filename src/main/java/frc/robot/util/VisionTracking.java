@@ -23,6 +23,15 @@ public class VisionTracking {
 
     NetworkTable mTable;
 
+    private static VisionTracking mInstance = null;
+
+    public static VisionTracking getInstance() {
+        if (mInstance == null) {
+            mInstance = new VisionTracking();
+        }
+        return mInstance;
+    }
+
     public VisionTracking() {
         mAngle = 0.0;
         mDistance = 0.0;

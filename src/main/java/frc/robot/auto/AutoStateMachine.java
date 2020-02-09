@@ -107,12 +107,12 @@ public class AutoStateMachine {
         } else if (currentState == TURN) {
             turn(90);
         } else if (currentState == SHOOT) {
-            shoot();
+            // shoot();
         } else if (currentState == INTAKE) {
-            intake();
+            // intake();
         } else if (currentState == DRIVE_AND_INTAKE) {
-            drive(4);
-            intake();
+            // drive(4);
+            // intake();
         } else if(currentState ==  WAIT){
             
         }
