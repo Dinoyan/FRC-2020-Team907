@@ -7,16 +7,18 @@
 
 package frc.robot.teleop;
 
+import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
 import frc.robot.JoystickHandler;
-// import frc.robot.subsystem.CWPanel;
+import frc.robot.subsystem.CWPanel;
 import frc.robot.subsystem.Drivetrain;
 import frc.robot.subsystem.Hook;
 import frc.robot.subsystem.Intake;
 import frc.robot.subsystem.Shooter;
+import frc.robot.util.VisionTracking;
 
 /**
  * Contains all the teleop code
@@ -28,7 +30,8 @@ public class ITeleopLooper implements ITeleop {
     private Shooter mShooter;
     private Intake mIntake;
     private Hook mHook;
-    // private CWPanel mCWPanel;
+    private VisionTracking mLimelight;
+    private CWPanel mCWPanel;
 
     private JoystickHandler mJoystick;
 
@@ -36,16 +39,18 @@ public class ITeleopLooper implements ITeleop {
 
     boolean mCWButtonPressed = false;
 
+    Compressor mCompressor = new Compressor();
+
     // shooter states
-    // private enum mShooterState {
-    //     SHOOT,
-    //     ALIGN,
-    //     WAIT_FOR_VEL,
-    //     MOVE_CONVEYOR,
-    //     MOVE_INTAKE,
-    //     LIFT_HOOD,
-    //     STOP
-    // };
+    private enum mShooterState {
+        SHOOT,
+        ALIGN,
+        WAIT_FOR_VEL,
+        MOVE_CONVEYOR,
+        MOVE_INTAKE,
+        LIFT_HOOD,
+        STOP
+    };
 
     // boolean mFrontIntakeState = true;
     // boolean mBackIntakeState = true;
@@ -65,11 +70,15 @@ public class ITeleopLooper implements ITeleop {
         mShooter = Shooter.getInstance();
         mIntake = Intake.getInstance();
         // mHook = Hook.getInstance();
-        // mCWPanel = CWPanel.getInstance();
+        mCWPanel = CWPanel.getInstance();
 
         mJoystick = JoystickHandler.getInstance();
-    
-         teleopTime.start();
+
+        mLimelight = VisionTracking.getInstance();
+        
+        mCompressor.start();
+
+        teleopTime.start();
     }
 
     @Override
@@ -92,7 +101,6 @@ public class ITeleopLooper implements ITeleop {
         // intaking cell
         if (mJoystick.getFrontIntake()) {
             mIntake.frontIntake(false);
-            // Move this value to constants
             mIntake.intakeCell(Constants.INTAKE_ROLLER_SPEED);
         } else {
             mIntake.frontIntake(true);
@@ -122,19 +130,36 @@ public class ITeleopLooper implements ITeleop {
             mShooter.shootCellOpen(shootValue);
             mIntake.conveyorControl(Constants.CONTROL_CONVEYOR_SPEED);
             mIntake.intakeCell(0.2);
+            mCompressor.stop();
         } else {
             mShooter.controlHood(false);
             mIntake.conveyorControl(Constants.DEFAULT_CONVEYOR_SPEED);
             mShooter.shootCellOpen(Constants.DEFAULT_SHOOTER_SPEED);
+            mCompressor.start();
         }
 
-        // TO-DO
-        // auto align & velocity control
+        shooterStateController(mShooterState.SHOOT);
+
     }
 
-    // private void shooterStateController() {
-
-    // }
+    private void shooterStateController(mShooterState state) {
+        switch(state) {
+            case SHOOT:
+                break;
+            case ALIGN:
+                break;
+            case WAIT_FOR_VEL:
+                break;
+            case MOVE_CONVEYOR:
+                break;
+            case MOVE_INTAKE:
+                break;
+            case LIFT_HOOD:
+                break;
+            case STOP:
+             break;
+        }
+    }
 
     private void hookEnabledLoop() {
         // if (teleopTime.get() > 120) {
@@ -143,27 +168,27 @@ public class ITeleopLooper implements ITeleop {
     }
 
     private void CWEnabledLoop() {
-        // char FMScolour = getFMSColour();
+        char FMScolour = getFMSColour();
 
-        // if (mJoystick.getCWButton()) {
-        //     mCWButtonPressed = true;
-        // }
+        if (mJoystick.getCWButton()) {
+            mCWButtonPressed = true;
+        }
 
-        // // check which stage by checking fms data for colour
-        // // if colour is null then, in stage 1 or 2
-        // if (mCWButtonPressed) {
-        //     if (FMScolour == '?') {
-        //         mCWPanel.rotate();
-        //         if (mCWPanel.stagedFinished()) {
-        //             mCWButtonPressed = false;
-        //         }
-        //     } else {
-        //         mCWPanel.posToColour(getFMSColour());
-        //         if (mCWPanel.stagedFinished()) {
-        //             mCWButtonPressed = false;
-        //         }
-        //     }
-        // }
+        // check which stage by checking fms data for colour
+        // if colour is null then, in stage 1 or 2
+        if (mCWButtonPressed) {
+            if (FMScolour == '?') {
+                mCWPanel.rotate();
+                if (mCWPanel.stagedFinished()) {
+                    mCWButtonPressed = false;
+                }
+            } else {
+                mCWPanel.posToColour(getFMSColour());
+                if (mCWPanel.stagedFinished()) {
+                    mCWButtonPressed = false;
+                }
+            }
+        }
     }
 
     // get data from fms
