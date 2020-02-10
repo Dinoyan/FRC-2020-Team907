@@ -79,6 +79,10 @@ public class CyberPID {
         return this.mSetpoint;
     }
 
+    public void setTolerance(double value) {
+        this.kTolerance = value;
+    }
+
     public void reset() {
         this.mCount = 0;
         this.mTarget = false;
