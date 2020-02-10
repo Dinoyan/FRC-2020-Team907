@@ -74,7 +74,7 @@ public class AutoStateMachine {
         currentStateIndex = 0;
         setCurrentState(WAIT);
         buildAuto(selection);
-        
+
         mTimer.start();
     }
 
@@ -133,7 +133,7 @@ public class AutoStateMachine {
     private void drive(double distance) {
         mDrivePID.setSetpoint(distance);
         boolean onTarget = mDrivePID.onTarget(mDrive.getRightDistance());
-       
+
         if (!onTarget) {
             onTarget = mDrivePID.onTarget(mDrive.getRightDistance());
             double value = mDrivePID.getOutput(mDrive.getRightDistance());
@@ -149,7 +149,6 @@ public class AutoStateMachine {
 
     private void turn(double angle) {
         mTurnPID.setSetpoint(angle);
-
         boolean onTarget = mTurnPID.onTarget(mDrive.getAngle());
 
         if (!onTarget) {
