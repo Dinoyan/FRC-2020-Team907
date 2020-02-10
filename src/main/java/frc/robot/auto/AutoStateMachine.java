@@ -143,8 +143,8 @@ public class AutoStateMachine {
             mDrive.drive(0, 0);
             currentStateIndex++;
             setCurrentState(nextStateArray[currentStateIndex]);
+            mDrivePID.reset();
         }
-        mDrivePID.reset();
     }
 
     private void turn(double angle) {
@@ -161,8 +161,8 @@ public class AutoStateMachine {
             mDrive.drive(0, 0);
             currentStateIndex++;
             setCurrentState(nextStateArray[currentStateIndex]);
+            mTurnPID.reset();
         }
-        mTurnPID.reset();
     }
 
     private void shoot() {
