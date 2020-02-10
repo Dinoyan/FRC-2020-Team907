@@ -8,6 +8,7 @@
 package frc.robot.subsystem;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
@@ -22,8 +23,8 @@ public class Intake extends Subsystem{
 
     private WPI_TalonSRX mConveyor;
 
-    private WPI_TalonSRX mFrontMotor;
-    private WPI_TalonSRX mBackMotor;
+    private WPI_VictorSPX mFrontMotor;
+    private WPI_VictorSPX mBackMotor;
 
     private DoubleSolenoid mFrontPistons;
     private DoubleSolenoid mBackPistons;
@@ -37,8 +38,8 @@ public class Intake extends Subsystem{
 
     @Override
     public void init() {
-        mFrontMotor = new WPI_TalonSRX(Constants.INTAKE_MOTORS[0]);
-        mBackMotor = new WPI_TalonSRX(Constants.INTAKE_MOTORS[1]);
+        mFrontMotor = new WPI_VictorSPX(Constants.INTAKE_MOTORS[0]);
+        mBackMotor = new WPI_VictorSPX(Constants.INTAKE_MOTORS[1]);
 
         mConveyor = new WPI_TalonSRX(Constants.CONVEYOR_MOTOR);
 
@@ -73,12 +74,12 @@ public class Intake extends Subsystem{
     }
 
     public void intakeCell(double speed) {
-        if (mFrontPistons.get() == Value.kForward) {
-            mFrontMotor.set(speed);
+        if (mFrontPistons.get() == Value.kReverse) {
+             mFrontMotor.set(speed);
         }
 
         if (mBackPistons.get() == Value.kForward) {
-            mBackMotor.set(speed);
+             mBackMotor.set(speed);
         }
     }
 

@@ -61,26 +61,31 @@ public class AutoStateMachine {
 
     public void init(byte selection) {
         // Subsystems
-         mDrive = Drivetrain.getInstance();
-         mShooter = Shooter.getInstance();
-         mIntake = Intake.getInstance();
+        mDrive = Drivetrain.getInstance();
+        mShooter = Shooter.getInstance();
+        mIntake = Intake.getInstance();
 
-         mDrive.init();
-         mShooter.init();
-         mIntake.init();
+        mDrivePID = new CyberPID();
+        mTurnPID = new CyberPID();
 
-         currentStateIndex = 0;
-         setCurrentState(WAIT);
-         buildAuto(selection);
+        mDrivePID.setTolerance(2);
+        mTurnPID.setTolerance(1);
+
+        currentStateIndex = 0;
+        setCurrentState(WAIT);
+        buildAuto(selection);
         
-         mTimer.start();
+        mTimer.start();
     }
 
     public void buildAuto(byte mode) {
         byte stateCounter = 0;
-
         if (DEFAULT == mode) {
             nextStateArray[stateCounter] = DRIVE;
+            stateCounter++;
+            nextStateArray[stateCounter] = TURN;
+            stateCounter++;
+            nextStateArray[stateCounter] = WAIT;
             stateCounter++;
         } else if (MIDDLE_SHOOT == mode) {
 
@@ -89,7 +94,6 @@ public class AutoStateMachine {
         } else if (LEFT_SHOOT == mode) {
 
         } 
-
         setCurrentState(nextStateArray[currentStateIndex]);
     }
 
@@ -98,20 +102,20 @@ public class AutoStateMachine {
     }
 
     public void autonomousEnabledLoop() {
-        boolean cond = infLoopChecker();
-        if (cond) {
-            if (currentState == DRIVE) {
-                drive(4);
-            } else if (currentState == TURN) {
-                turn(90);
-            } else if (currentState == SHOOT) {
-                shoot();
-            } else if (currentState == INTAKE) {
-                intake();
-            } else if (currentState == DRIVE_AND_INTAKE) {
-                drive(4);
-                intake();
-            }
+    
+        if (currentState == DRIVE) {
+            drive(179);
+        } else if (currentState == TURN) {
+            turn(90);
+        } else if (currentState == SHOOT) {
+            shoot();
+        } else if (currentState == INTAKE) {
+            mIntake.frontIntake(true);
+        } else if (currentState == DRIVE_AND_INTAKE) {
+            // drive(4);
+            // intake();
+        } else if(currentState ==  WAIT){
+            
         }
     }
 
@@ -129,17 +133,18 @@ public class AutoStateMachine {
     private void drive(double distance) {
         mDrivePID.setSetpoint(distance);
         boolean onTarget = mDrivePID.onTarget(mDrive.getRightDistance());
-        
+       
         if (!onTarget) {
             onTarget = mDrivePID.onTarget(mDrive.getRightDistance());
             double value = mDrivePID.getOutput(mDrive.getRightDistance());
             mDrive.drive(value * .5, value * .5);
+
         } else {
             mDrive.drive(0, 0);
             currentStateIndex++;
             setCurrentState(nextStateArray[currentStateIndex]);
+            System.out.println(currentStateIndex);
         }
-
         mDrivePID.reset();
     }
 
@@ -152,28 +157,23 @@ public class AutoStateMachine {
             onTarget = mTurnPID.onTarget(mDrive.getAngle());
             double value = mTurnPID.getOutput(mDrive.getAngle());
             mDrive.drive(-value * .5, value * .5);
+
         } else {
             mDrive.drive(0, 0);
             currentStateIndex++;
             setCurrentState(nextStateArray[currentStateIndex]);
         }
-    
         mTurnPID.reset();
-    }
-
-    private void intake() {
-       
     }
 
     private void shoot() {
         boolean doneShooting = false;
 
         if (!doneShooting) {
-
+            mShooter.shootCellClosed(600);
         } else {
             currentStateIndex++;
             setCurrentState(nextStateArray[currentStateIndex]);
         }
     }
-    
 }

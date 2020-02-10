@@ -25,6 +25,8 @@ public class CWPanel extends Subsystem {
 
     private static CWPanel mInstance = null;
 
+    Color mDetectedColor;
+
     private char mDColour = '?';
 
     private final I2C.Port i2cPort = I2C.Port.kOnboard;
@@ -80,7 +82,10 @@ public class CWPanel extends Subsystem {
 
     @Override
     public void updateDashboard() {
+         // test
+         mDetectedColor = mColourSensor.getColor();
         SmartDashboard.putBoolean("CW Finished", mStagedFinished);
+        SmartDashboard.putNumber("Blue", mDetectedColor.blue);
     }
 
     // Read enc -> PID -> output

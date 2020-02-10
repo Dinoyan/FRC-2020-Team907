@@ -7,6 +7,7 @@
 
 package frc.robot.teleop;
 
+import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -17,6 +18,7 @@ import frc.robot.subsystem.Drivetrain;
 import frc.robot.subsystem.Hook;
 import frc.robot.subsystem.Intake;
 import frc.robot.subsystem.Shooter;
+import frc.robot.util.VisionTracking;
 
 /**
  * Contains all the teleop code
@@ -28,6 +30,7 @@ public class ITeleopLooper implements ITeleop {
     private Shooter mShooter;
     private Intake mIntake;
     private Hook mHook;
+    private VisionTracking mLimelight;
     private CWPanel mCWPanel;
 
     private JoystickHandler mJoystick;
@@ -36,21 +39,24 @@ public class ITeleopLooper implements ITeleop {
 
     boolean mCWButtonPressed = false;
 
+    Compressor mCompressor = new Compressor();
+
+    // aiming constants
+    float kP = -0.1f;
+    float min_command = 0.05f;
+
     // shooter states
-    // private enum mShooterState {
-    //     SHOOT,
-    //     ALIGN,
-    //     WAIT_FOR_VEL,
-    //     MOVE_CONVEYOR,
-    //     MOVE_INTAKE,
-    //     LIFT_HOOD,
-    //     STOP
-    // };
+    private enum mShooterState {
+        SHOOT,
+        ALIGN,
+        WAIT_FOR_VEL,
+        MOVE_CONVEYOR,
+        MOVE_INTAKE,
+        LIFT_HOOD,
+        STOP
+    };
 
-    // boolean mFrontIntakeState = true;
-    // boolean mBackIntakeState = true;
-
-    private Timer teleopTime;
+    private Timer teleopTime = new Timer();
 
     public static ITeleopLooper getInstance() {
         if (mInstance == null){
@@ -68,12 +74,10 @@ public class ITeleopLooper implements ITeleop {
         mCWPanel = CWPanel.getInstance();
 
         mJoystick = JoystickHandler.getInstance();
-    
-        mDrive.init();
-        mShooter.init();
-        mIntake.init();
-        mHook.init();
-        mCWPanel.init();
+
+        mLimelight = VisionTracking.getInstance();
+        
+        mCompressor.start();
 
         teleopTime.start();
     }
@@ -97,25 +101,24 @@ public class ITeleopLooper implements ITeleop {
     private void intakeEnabledLoop() {
         // intaking cell
         if (mJoystick.getFrontIntake()) {
-            mIntake.frontIntake(true);
-            // Move this value to constants
+            mIntake.frontIntake(false);
             mIntake.intakeCell(Constants.INTAKE_ROLLER_SPEED);
         } else {
-            mIntake.frontIntake(false);
+            mIntake.frontIntake(true);
             mIntake.intakeCell(0);
         }
 
         if (mJoystick.getBackIntake()) {
-            mIntake.backIntake(true);
+            mIntake.backIntake(false);
             mIntake.intakeCell(Constants.INTAKE_ROLLER_SPEED);
         } else {
-            mIntake.backIntake(false);
+            mIntake.backIntake(true);
             mIntake.intakeCell(0);
         }
 
         // eject cell
-        if (mJoystick.getEject() > 0.1) {
-            mIntake.ejectCell(Constants.VOMIT_SPEED);
+        if (mJoystick.getEject()) {
+            mIntake.intakeCell(Constants.VOMIT_SPEED);
         }
     }
 
@@ -126,25 +129,65 @@ public class ITeleopLooper implements ITeleop {
         if (shootValue > 0.1) {
             mShooter.controlHood(true);
             mShooter.shootCellOpen(shootValue);
-            mIntake.conveyorControl(0.3);
+            mIntake.conveyorControl(Constants.CONTROL_CONVEYOR_SPEED);
             mIntake.intakeCell(0.2);
+            mCompressor.stop();
         } else {
             mShooter.controlHood(false);
-            mIntake.conveyorControl(0);
-            mIntake.conveyorControl(0);
+            mIntake.conveyorControl(Constants.DEFAULT_CONVEYOR_SPEED);
+            mShooter.shootCellOpen(Constants.DEFAULT_SHOOTER_SPEED);
+            mCompressor.start();
         }
 
-        // TO-DO
-        // auto align & velocity control
+        if (mJoystick.getAutoAlign()) {
+            shooterStateController(mShooterState.ALIGN);
+        }
+
+        if (mJoystick.getShootBtn()) {
+            shooterStateController(mShooterState.SHOOT);
+        }
     }
 
-    // private void shooterStateController() {
+    private void shooterStateController(mShooterState state) {
+        switch(state) {
+            case SHOOT:
+                shooterStateController(mShooterState.MOVE_CONVEYOR);
+                shooterStateController(mShooterState.MOVE_INTAKE);
+                break;
+            case ALIGN:
+                double mCorrection = mLimelight.vGetAngle();
+                double adjust = 0.0;
 
-    // }
+                if (mCorrection > 1.0) {
+                    adjust = kP * mCorrection - min_command;
+                } else if (mCorrection < 1.0) {
+                    adjust = kP * mCorrection + min_command;
+                }
+
+                mDrive.drive(adjust, adjust);
+                break;
+            case WAIT_FOR_VEL:
+                mShooter.shootCellClosed(600);
+                break;
+            case MOVE_CONVEYOR:
+                mIntake.conveyorControl(Constants.CONTROL_CONVEYOR_SPEED);
+                break;
+            case MOVE_INTAKE:
+                mIntake.intakeCell(Constants.INTAKE_ROLLER_SPEED);
+                break;
+            case LIFT_HOOD:
+                mShooter.controlHood(true);
+                break;
+            case STOP:
+                mShooter.stop();
+                mIntake.stop();
+                break;
+        }
+    }
 
     private void hookEnabledLoop() {
         if (teleopTime.get() > 120) {
-            mHook.pullUp(mJoystick.getHookAxis());
+             mHook.pullUp(mJoystick.getHookAxis());
         }
     }
 
@@ -176,7 +219,9 @@ public class ITeleopLooper implements ITeleop {
     private char getFMSColour() {
         char _colour = '?';
         mGameData = DriverStation.getInstance().getGameSpecificMessage();
-        _colour = mGameData.charAt(0);
+        if (mGameData.length() > 1) {
+            _colour = mGameData.charAt(0);
+        }
 
         SmartDashboard.putString("FMS Data", "test");
         return _colour;

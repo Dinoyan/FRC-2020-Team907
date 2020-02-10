@@ -49,11 +49,11 @@ public class JoystickHandler {
     }
 
     public boolean getFrontIntake() {
-        return mShootStick.getRawButtonPressed(Constants.FRONT_INTAKE);
+        return mShootStick.getRawButton(Constants.FRONT_INTAKE);
     }
 
     public boolean getBackIntake() {
-        return mShootStick.getRawButtonPressed(Constants.BACK_INTAKE);
+        return mShootStick.getRawButton(Constants.BACK_INTAKE);
     }
 
     public double getHookAxis() {
@@ -72,8 +72,8 @@ public class JoystickHandler {
         return mShootStick.getRawAxis(Constants.SHOOT_MANUALLY_AXIS);
     }
 
-    public double getEject() {
-        return mShootStick.getRawAxis(Constants.EJECT);
+    public boolean getEject() {
+        return mShootStick.getRawButton(Constants.EJECT);
     }
 
 }

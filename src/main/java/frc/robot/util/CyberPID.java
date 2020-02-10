@@ -33,9 +33,9 @@ public class CyberPID {
 
 
     public CyberPID() {
-        this.kP = 0.01;
-        this.kI = 0.01;
-        this.kD = 0.01;
+        this.kP = 0.1;
+        this.kI = 0.0;
+        this.kD = 0.3;
     } 
 
     public CyberPID(double kP, double kI, double kD) {
@@ -77,6 +77,10 @@ public class CyberPID {
 
     public double getSetpoint() {
         return this.mSetpoint;
+    }
+
+    public void setTolerance(double value) {
+        this.kTolerance = value;
     }
 
     public void reset() {

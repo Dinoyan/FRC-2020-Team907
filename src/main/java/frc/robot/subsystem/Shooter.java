@@ -57,9 +57,18 @@ public class Shooter extends Subsystem {
         // configure sensor
         mShooterMaster.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute, 0, 10);
 
+        mShooterMaster.setSensorPhase(true);
+
+        mShooterMaster.configNominalOutputForward(0);
+        mShooterMaster.configNominalOutputReverse(0);
+        mShooterMaster.configPeakOutputForward(1);
+        mShooterMaster.configPeakOutputReverse(-1);
+
+        // set kF to 0 and tune from there
         mShooterMaster.config_kP(0, 0.1);
         mShooterMaster.config_kI(0, 0);
         mShooterMaster.config_kD(0, 0.1);
+        mShooterMaster.config_kF(0, 0);
     }
 
     @Override
@@ -84,8 +93,8 @@ public class Shooter extends Subsystem {
     }
 
     public void shootCellOpen(double speed) {
-        mShooterMaster.set(ControlMode.PercentOutput, speed);
-        mShooterSlave.set(ControlMode.PercentOutput, speed);
+        mShooterMaster.set(-speed);
+        mShooterSlave.set(speed);
     }
 
     // closed loop control
@@ -121,5 +130,4 @@ public class Shooter extends Subsystem {
             shootCellOpen(0);
         }
     }
-
 }
