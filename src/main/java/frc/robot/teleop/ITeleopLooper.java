@@ -41,6 +41,10 @@ public class ITeleopLooper implements ITeleop {
 
     Compressor mCompressor = new Compressor();
 
+    // aiming constants
+    float kP = -0.1f;
+    float min_command = 0.05f;
+
     // shooter states
     private enum mShooterState {
         SHOOT,
@@ -152,6 +156,15 @@ public class ITeleopLooper implements ITeleop {
             case ALIGN:
                 double mCorrection = mLimelight.vGetAngle();
 
+                double adjust = 0.0;
+
+                if (mCorrection > 1.0) {
+                    adjust = kP * mCorrection - min_command;
+                } else if (mCorrection < 1.0) {
+                    adjust = kP * mCorrection + min_command;
+                }
+
+                mDrive.drive(adjust, adjust);
                 break;
             case WAIT_FOR_VEL:
                 // get vel based on dis
