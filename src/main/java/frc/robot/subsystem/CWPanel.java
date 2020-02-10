@@ -61,8 +61,6 @@ public class CWPanel extends Subsystem {
 
         mCWMotor.configFactoryDefault();
 
-       
-
         mCW_PID = new CyberPID();
         mCW_PID.reset();
     }

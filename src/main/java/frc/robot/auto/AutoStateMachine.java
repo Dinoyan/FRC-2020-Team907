@@ -67,7 +67,10 @@ public class AutoStateMachine {
 
         mDrivePID = new CyberPID();
         mTurnPID = new CyberPID();
- 
+
+        mDrivePID.setTolerance(2);
+        mTurnPID.setTolerance(1);
+
         currentStateIndex = 0;
         setCurrentState(WAIT);
         buildAuto(selection);
@@ -78,9 +81,9 @@ public class AutoStateMachine {
     public void buildAuto(byte mode) {
         byte stateCounter = 0;
         if (DEFAULT == mode) {
-            nextStateArray[stateCounter] = TURN;
-            stateCounter++;
             nextStateArray[stateCounter] = DRIVE;
+            stateCounter++;
+            nextStateArray[stateCounter] = TURN;
             stateCounter++;
             nextStateArray[stateCounter] = WAIT;
             stateCounter++;
@@ -107,14 +110,13 @@ public class AutoStateMachine {
         } else if (currentState == SHOOT) {
             shoot();
         } else if (currentState == INTAKE) {
-            intake();
+            mIntake.frontIntake(true);
         } else if (currentState == DRIVE_AND_INTAKE) {
             // drive(4);
             // intake();
         } else if(currentState ==  WAIT){
             
         }
-    
     }
 
     private boolean infLoopChecker() {
@@ -164,19 +166,14 @@ public class AutoStateMachine {
         mTurnPID.reset();
     }
 
-    private void intake() {
-       
-    }
-
     private void shoot() {
         boolean doneShooting = false;
 
         if (!doneShooting) {
-
+            mShooter.shootCellClosed(600);
         } else {
             currentStateIndex++;
             setCurrentState(nextStateArray[currentStateIndex]);
         }
     }
-    
 }

@@ -33,8 +33,6 @@ public class Drivetrain extends Subsystem {
     private WPI_TalonFX mRMaster;
     private WPI_TalonFX mRSlave;
 
-    // private DifferentialDrive mDrive;
-
     private AHRS navx;
 
     public static Drivetrain getInstance() {
@@ -51,8 +49,6 @@ public class Drivetrain extends Subsystem {
         mRMaster = new WPI_TalonFX(Constants.DRIVE_RIGHT[0]);
         mRSlave = new WPI_TalonFX(Constants.DRIVE_RIGHT[1]);
 
-        // mDrive = new DifferentialDrive(mLMaster, mRMaster);
-
         mLMaster.configFactoryDefault();
         mLSlave.configFactoryDefault();
         mRMaster.configFactoryDefault();
@@ -61,10 +57,6 @@ public class Drivetrain extends Subsystem {
         mLMaster.follow(mLSlave);
         mRMaster.follow(mRSlave);
 
-        // mDrive.setRightSideInverted(true);
-
-        // TO-DO
-        // config encoders
         mRMaster.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor, 0, 10);
 
         navx = new AHRS(SPI.Port.kMXP);
@@ -95,7 +87,6 @@ public class Drivetrain extends Subsystem {
     }
 
     public void drive(double left, double right) {
-
        if (Math.abs(left) > 0.05 || Math.abs(right) > 0.05) {
         this.mRMaster.set(-right);
         this.mRSlave.set(-right);
@@ -107,7 +98,6 @@ public class Drivetrain extends Subsystem {
         this.mLMaster.set(0);
         this.mLSlave.set(0);
        }
-
     }
 
     public double getRightDistance() {
