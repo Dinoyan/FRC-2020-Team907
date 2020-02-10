@@ -71,4 +71,8 @@ public class VisionTracking {
         mArea = ta.getDouble(0.0);
         return mArea;
     }
+
+    public void updateDashboard() {
+        
+    }
 }

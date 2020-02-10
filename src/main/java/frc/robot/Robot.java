@@ -17,6 +17,7 @@ import frc.robot.subsystem.Intake;
 import frc.robot.subsystem.Shooter;
 import frc.robot.teleop.ITeleopLooper;
 import frc.robot.util.CrashTracker;
+import frc.robot.util.VisionTracking;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -44,6 +45,8 @@ public class Robot extends TimedRobot {
 
    private ITeleopLooper mTeleopLooper;
 
+   private VisionTracking mLimelight;
+
    private byte mAutoMode = 0;
 
   @Override
@@ -60,6 +63,8 @@ public class Robot extends TimedRobot {
     mAutoStateMachine = AutoStateMachine.getInstance();
 
     mTeleopLooper = ITeleopLooper.getInstance();
+
+    mLimelight = VisionTracking.getInstance();
 
     mSubsystemManager.setSystem (
       mDrive,
@@ -104,6 +109,7 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
     mSubsystemManager.outPutDashboard();
+    mLimelight.updateDashboard();
 
     mTeleopLooper.driveEnabledLoop();
     mTeleopLooper.superstructureEnabledLoop();

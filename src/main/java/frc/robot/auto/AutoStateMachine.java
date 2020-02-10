@@ -139,11 +139,10 @@ public class AutoStateMachine {
             double value = mDrivePID.getOutput(mDrive.getRightDistance());
             mDrive.drive(value * .5, value * .5);
 
-        } else {
+        } else if (onTarget){
             mDrive.drive(0, 0);
             currentStateIndex++;
             setCurrentState(nextStateArray[currentStateIndex]);
-            System.out.println(currentStateIndex);
         }
         mDrivePID.reset();
     }
@@ -158,7 +157,7 @@ public class AutoStateMachine {
             double value = mTurnPID.getOutput(mDrive.getAngle());
             mDrive.drive(-value * .5, value * .5);
 
-        } else {
+        } else if (onTarget) {
             mDrive.drive(0, 0);
             currentStateIndex++;
             setCurrentState(nextStateArray[currentStateIndex]);
@@ -171,7 +170,7 @@ public class AutoStateMachine {
 
         if (!doneShooting) {
             mShooter.shootCellClosed(600);
-        } else {
+        } else if (doneShooting) {
             currentStateIndex++;
             setCurrentState(nextStateArray[currentStateIndex]);
         }
