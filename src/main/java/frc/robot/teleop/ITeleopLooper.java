@@ -151,11 +151,11 @@ public class ITeleopLooper implements ITeleop {
     private void shooterStateController(mShooterState state) {
         switch(state) {
             case SHOOT:
-                // pass in desired vel
+                shooterStateController(mShooterState.MOVE_CONVEYOR);
+                shooterStateController(mShooterState.MOVE_INTAKE);
                 break;
             case ALIGN:
                 double mCorrection = mLimelight.vGetAngle();
-
                 double adjust = 0.0;
 
                 if (mCorrection > 1.0) {
@@ -167,7 +167,7 @@ public class ITeleopLooper implements ITeleop {
                 mDrive.drive(adjust, adjust);
                 break;
             case WAIT_FOR_VEL:
-                // get vel based on dis
+                mShooter.shootCellClosed(600);
                 break;
             case MOVE_CONVEYOR:
                 mIntake.conveyorControl(Constants.CONTROL_CONVEYOR_SPEED);
