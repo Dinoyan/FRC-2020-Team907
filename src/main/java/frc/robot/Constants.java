@@ -26,6 +26,8 @@ public class Constants {
 
     public final static double CONTROL_CONVEYOR_SPEED = 1.0;
 
+    public final static double SHOOTER_VELOCITY_TOLERANCE = 100;
+
     // ******************* CW PANEL ************************
     public final static int CW_CAN = 7;
 
