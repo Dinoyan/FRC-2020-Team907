@@ -38,6 +38,8 @@ public class ITeleopLooper implements ITeleop {
 
     boolean mCWButtonPressed = false;
 
+    boolean mReadyToShoot = false;
+
     Compressor mCompressor = new Compressor();
 
     // aiming constants
@@ -139,10 +141,15 @@ public class ITeleopLooper implements ITeleop {
 
         if (mJoystick.getAutoAlign()) {
             shooterStateController(mShooterState.ALIGN);
+        } else {
+            shooterStateController(mShooterState.STOP);
         }
 
         if (mJoystick.getShootBtn()) {
-            shooterStateController(mShooterState.SHOOT);
+            shooterStateController(mShooterState.WAIT_FOR_VEL);
+            if (mReadyToShoot) {
+                shooterStateController(mShooterState.SHOOT);
+            }
         }
     }
 
@@ -165,6 +172,11 @@ public class ITeleopLooper implements ITeleop {
                 mDrive.drive(adjust, adjust);
                 break;
             case WAIT_FOR_VEL:
+                if (Math.abs(mShooter.getShooterSpeed()) < Constants.SHOOTER_VELOCITY_TOLERANCE) {
+                    mReadyToShoot = true;
+                } else {
+                    mReadyToShoot = false;
+                }
                 mShooter.shootCellClosed(600);
                 break;
             case MOVE_CONVEYOR:
