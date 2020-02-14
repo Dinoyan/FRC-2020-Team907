@@ -58,6 +58,7 @@ public class Drivetrain extends Subsystem {
         mRMaster.follow(mRSlave);
 
         mRMaster.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor, 0, 10);
+        mLMaster.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor, 0, 10);
 
         navx = new AHRS(SPI.Port.kMXP);
     }

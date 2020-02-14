@@ -96,7 +96,7 @@ public class ITeleopLooper implements ITeleop {
         intakeEnabledLoop();
         shooterEnabledLoop();
         hookEnabledLoop();
-        CWEnabledLoop();
+        // CWEnabledLoop();
     }
 
     private void intakeEnabledLoop() {
@@ -104,22 +104,31 @@ public class ITeleopLooper implements ITeleop {
         if (mJoystick.getFrontIntake()) {
             mIntake.frontIntake(false);
             mIntake.intakeCell(Constants.INTAKE_ROLLER_SPEED);
+            mIntake.intakeRawSpeed(0.0, Constants.INTAKE_IDLE_SPEED);
+            mIntake.conveyorControl(Constants.CONTROL_CONVEYOR_SPEED);
         } else {
             mIntake.frontIntake(true);
-            mIntake.intakeCell(0);
         }
 
         if (mJoystick.getBackIntake()) {
             mIntake.backIntake(false);
             mIntake.intakeCell(Constants.INTAKE_ROLLER_SPEED);
+            mIntake.intakeRawSpeed(Constants.INTAKE_IDLE_SPEED, 0.0);
+            mIntake.conveyorControl(Constants.CONTROL_CONVEYOR_SPEED);
         } else {
             mIntake.backIntake(true);
+        }
+
+        if (!mJoystick.getBackIntake() && !mJoystick.getFrontIntake()) {
             mIntake.intakeCell(0);
+            mIntake.conveyorControl(Constants.DEFAULT_CONVEYOR_SPEED);
         }
 
         // eject cell
         if (mJoystick.getEject()) {
-            mIntake.intakeCell(Constants.VOMIT_SPEED);
+            mIntake.ejectCell(Constants.VOMIT_SPEED);
+        } else {
+            mIntake.ejectCell(0);
         }
     }
 
@@ -128,29 +137,25 @@ public class ITeleopLooper implements ITeleop {
         double shootValue = mJoystick.getManuallyShoot();
 
         if (shootValue > 0.1) {
-            shooterStateController(mShooterState.LIFT_HOOD);
-            shooterStateController(mShooterState.MOVE_CONVEYOR);
-            shooterStateController(mShooterState.MOVE_INTAKE);
+            mShooter.controlHood(true);
             mShooter.shootCellOpen(shootValue);
             mCompressor.stop();
-        } else {
-            mShooter.controlHood(false);
-            shooterStateController(mShooterState.STOP);
-            mCompressor.start();
-        }
+            if (mJoystick.getShootNow()) {
+                mIntake.intakeRawSpeed(0.5, 0.5);
 
-        if (mJoystick.getAutoAlign()) {
-            shooterStateController(mShooterState.ALIGN);
-        } else {
-            shooterStateController(mShooterState.STOP);
-        }
-
-        if (mJoystick.getShootBtn()) {
-            shooterStateController(mShooterState.WAIT_FOR_VEL);
-            if (mReadyToShoot) {
-                shooterStateController(mShooterState.SHOOT);
+                mShooter.controlAcc(-1.0);
+                mIntake.conveyorControl(Constants.CONTROL_CONVEYOR_SPEED);
             }
+
+        } else {
+            mShooter.shootCellOpen(Constants.DEFAULT_SHOOTER_SPEED);
+            mShooter.controlHood(false);
+            mCompressor.start();
+            mShooter.controlAcc(0.0);
         }
+
+        shooterStateController(mShooterState.ALIGN);
+
     }
 
     private void shooterStateController(mShooterState state) {
@@ -160,7 +165,7 @@ public class ITeleopLooper implements ITeleop {
                 shooterStateController(mShooterState.MOVE_INTAKE);
                 break;
             case ALIGN:
-                double mCorrection = mLimelight.vGetAngle();
+                double mCorrection = mLimelight.getX();
                 double adjust = 0.0;
 
                 if (mCorrection > 1.0) {
@@ -168,11 +173,11 @@ public class ITeleopLooper implements ITeleop {
                 } else if (mCorrection < 1.0) {
                     adjust = kP * mCorrection + min_command;
                 }
-
-                mDrive.drive(adjust, adjust);
+                System.out.println("HEREE");
+                mDrive.drive(adjust * 0.2, adjust * 0.2);
                 break;
             case WAIT_FOR_VEL:
-                if (Math.abs(mShooter.getShooterSpeed()) < Constants.SHOOTER_VELOCITY_TOLERANCE) {
+                if (Math.abs(mShooter.getShooterSpeed()) < 100) {
                     mReadyToShoot = true;
                 } else {
                     mReadyToShoot = false;

@@ -10,6 +10,7 @@ package frc.robot.util;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  * Add your docs here.
@@ -73,6 +74,6 @@ public class VisionTracking {
     }
 
     public void updateDashboard() {
-        
+        SmartDashboard.putNumber("Limelight X", getX());
     }
 }

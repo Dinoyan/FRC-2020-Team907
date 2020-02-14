@@ -29,6 +29,8 @@ public class Shooter extends Subsystem {
 
     private DoubleSolenoid mHood;
 
+    private WPI_TalonSRX mAcc;
+
     private double mVelocity;
 
     public static Shooter getInstance() {
@@ -42,6 +44,8 @@ public class Shooter extends Subsystem {
     public void init() {
         mShooterMaster = new WPI_TalonSRX(Constants.SHOOTER_CAN[0]);
         mShooterSlave = new WPI_TalonSRX(Constants.SHOOTER_CAN[1]);
+
+        mAcc = new WPI_TalonSRX(Constants.ACC_CAN);
 
         mHood = new DoubleSolenoid(Constants.HOOD_PISTON[0], Constants.HOOD_PISTON[1]);
 
@@ -94,7 +98,7 @@ public class Shooter extends Subsystem {
 
     public void shootCellOpen(double speed) {
         mShooterMaster.set(-speed);
-        mShooterSlave.set(speed);
+        mShooterSlave.set(-speed);
     }
 
     // closed loop control
@@ -114,6 +118,10 @@ public class Shooter extends Subsystem {
         } else {
             mHood.set(Value.kReverse);
         }
+    }
+
+    public void controlAcc(double speed) {
+        mAcc.set(speed);
     }
 
     // return shooter velocity

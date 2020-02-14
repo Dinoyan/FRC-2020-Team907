@@ -73,14 +73,25 @@ public class Intake extends Subsystem{
         mConveyor.set(speed);
     }
 
+    public void intakeRawSpeed(double frontSpeed, double backSpeed) {
+        if (frontSpeed > 0) {
+            mFrontMotor.set(frontSpeed);
+        }
+        
+        if (backSpeed > 0) {
+            mBackMotor.set(backSpeed);
+        }
+    }
+
     public void intakeCell(double speed) {
         if (mFrontPistons.get() == Value.kReverse) {
-             mFrontMotor.set(speed);
+            mFrontMotor.set(speed);
         }
 
-        if (mBackPistons.get() == Value.kForward) {
-             mBackMotor.set(speed);
+        if (mBackPistons.get() == Value.kReverse) {
+            mBackMotor.set(speed);
         }
+
     }
 
     public void ejectCell(double speed) {

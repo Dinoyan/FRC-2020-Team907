@@ -76,4 +76,7 @@ public class JoystickHandler {
         return mShootStick.getRawButton(Constants.EJECT);
     }
 
+    public boolean getShootNow() {
+        return mShootStick.getRawButton(4);
+    }
 }
