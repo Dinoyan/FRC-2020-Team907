@@ -102,7 +102,7 @@ public class AutoStateMachine {
     }
 
     public void autonomousEnabledLoop() {
-    
+
         if (currentState == DRIVE) {
             drive(179);
         } else if (currentState == TURN) {
@@ -144,6 +144,7 @@ public class AutoStateMachine {
             currentStateIndex++;
             setCurrentState(nextStateArray[currentStateIndex]);
             mDrivePID.reset();
+            mDrive.zeroSensors();
         }
     }
 
@@ -161,6 +162,7 @@ public class AutoStateMachine {
             currentStateIndex++;
             setCurrentState(nextStateArray[currentStateIndex]);
             mTurnPID.reset();
+            mDrive.zeroSensors();
         }
     }
 

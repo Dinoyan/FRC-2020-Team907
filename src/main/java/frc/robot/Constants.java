@@ -19,17 +19,17 @@ public class Constants {
     // ******************** SHOOTER ************************
     public final static int[] SHOOTER_CAN = {4, 5};
 
-    public final static int[] HOOD_PISTON = {6, 7};
+    public final static int[] HOOD_PISTON = {4, 5};
 
-    public final static double DEFAULT_CONVEYOR_SPEED = 0.0;
+    public final static double DEFAULT_CONVEYOR_SPEED = 0.5;
     public final static double DEFAULT_SHOOTER_SPEED = 0.0;
 
     public final static double CONTROL_CONVEYOR_SPEED = 1.0;
 
-    public final static double SHOOTER_VELOCITY_TOLERANCE = 100;
+    public final static int ACC_CAN = 7;
 
     // ******************* CW PANEL ************************
-    public final static int CW_CAN = 7;
+    public final static int CW_CAN = 9;
 
     // ******************** INTAKE *************************
     public final static int[] INTAKE_MOTORS = {0, 1};
@@ -39,6 +39,7 @@ public class Constants {
     public final static int CONVEYOR_MOTOR = 6;
 
     public final static double INTAKE_ROLLER_SPEED = 0.75;
+    public final static double INTAKE_IDLE_SPEED = 0.25;
     public final static double VOMIT_SPEED = -0.5;
 
     // ****************** JOYSTICKS ************************

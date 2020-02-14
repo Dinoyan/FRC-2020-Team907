@@ -70,12 +70,22 @@ public class Robot extends TimedRobot {
       mDrive,
       mShooter, 
       mIntake,
-      mHook,
-      mCWPanel
+      mHook
+      // mCWPanel
     );
 
     mSubsystemManager.init();
     CrashTracker.logRobotInit();
+  }
+
+  @Override
+  public void disabledInit() {
+    mDrive.switchToCoast();
+  }
+
+  @Override
+  public void disabledPeriodic() {
+    mDrive.switchToCoast();
   }
 
   @Override
@@ -85,6 +95,8 @@ public class Robot extends TimedRobot {
 
     mAutoMode = mAutoSelector.getAutoMode();
     mAutoStateMachine.init(mAutoMode);
+
+    mDrive.switchToBrake();
 
     CrashTracker.logAutoInit();
   }
@@ -102,6 +114,8 @@ public class Robot extends TimedRobot {
     mSubsystemManager.outPutDashboard();
 
     mTeleopLooper.init();
+
+    mDrive.switchToCoast();
 
     CrashTracker.logTeleopInit();
   }
