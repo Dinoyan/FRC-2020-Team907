@@ -126,7 +126,7 @@ public class ITeleopLooper implements ITeleop {
 
         // eject cell
         if (mJoystick.getEject()) {
-            mIntake.ejectCell(Constants.VOMIT_SPEED);
+            mIntake.ejectCell(-Constants.VOMIT_SPEED);
         } else {
             mIntake.ejectCell(0);
         }
@@ -138,13 +138,21 @@ public class ITeleopLooper implements ITeleop {
 
         if (shootValue > 0.1) {
             mShooter.controlHood(true);
-            mShooter.shootCellOpen(shootValue);
-            mCompressor.stop();
-            if (mJoystick.getShootNow()) {
-                mIntake.intakeRawSpeed(0.5, 0.5);
 
-                mShooter.controlAcc(-1.0);
+            // mShooter.shootCellOpen(1);
+            // mShooter.bangBangControl(185.0 * this.mLimelight.vGetDistance() + 1900.0);
+            // mShooter.bangBangControl(7000 * shootValue);
+
+            mShooter.BangBangControl((6.38 * Math.pow(this.mLimelight.vGetDistance(), 2))
+                    + (148 * this.mLimelight.vGetDistance()) + 2000);
+            // System.out.println((6.38 * Math.pow(this.mLimelight.vGetDistance(), 2)) + (148 * this.mLimelight.vGetDistance()));
+
+            mCompressor.stop();
+
+            if (mJoystick.getShootNow()) {
+                mShooter.controlAcc(1.0);
                 mIntake.conveyorControl(Constants.CONTROL_CONVEYOR_SPEED);
+                mIntake.intakeRawSpeed(Constants.INTAKE_ROLLER_SPEED, Constants.INTAKE_ROLLER_SPEED);
             }
 
         } else {
@@ -156,8 +164,9 @@ public class ITeleopLooper implements ITeleop {
 
         shooterStateController(mShooterState.ALIGN);
 
-    }
 
+    }
+    
     private void shooterStateController(mShooterState state) {
         switch(state) {
             case SHOOT:
@@ -173,7 +182,7 @@ public class ITeleopLooper implements ITeleop {
                 } else if (mCorrection < 1.0) {
                     adjust = kP * mCorrection + min_command;
                 }
-                System.out.println("HEREE");
+
                 mDrive.drive(adjust * 0.2, adjust * 0.2);
                 break;
             case WAIT_FOR_VEL:
@@ -181,7 +190,7 @@ public class ITeleopLooper implements ITeleop {
                 
                 mShooter.BangBangControl(desiredVel);
                 
-                if (Math.abs(mShooter.getShooterSpeed() - desiredVEl) < 100) {
+                if (Math.abs(mShooter.getShooterSpeed() - desiredVel) < 100) {
                     mReadyToShoot = true;
                 } else {
                     mReadyToShoot = false;

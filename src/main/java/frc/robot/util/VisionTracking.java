@@ -22,9 +22,9 @@ public class VisionTracking {
     private double mY;
     private double mArea;
 
-    private double kLimelightHeight;
-    private double kLimelightAngle;
-    private double kGoalHeigh;
+    private double kLimelightHeight = 2.083;
+    private double kLimelightAngle = 0.279;
+    private double kGoalHeigh = 7.583;
    
     NetworkTable mTable;
 
@@ -51,7 +51,7 @@ public class VisionTracking {
     }
 
     public double vGetDistance() {
-        mDistance = (kGoalHeigh - kLimelightHeight) / Math.tan(kLimelightAngle + this.getY());
+        mDistance = (1.78 * (kGoalHeigh - kLimelightHeight) / Math.tan(kLimelightAngle + (this.getY() * Math.PI / 180.0))) - 2.0;
         return mDistance;
     }
 
@@ -74,6 +74,7 @@ public class VisionTracking {
     }
 
     public void updateDashboard() {
-        SmartDashboard.putNumber("Limelight X", getX());
+        SmartDashboard.putString("Lime Angle", Math.round(getX()) + " deg");
+        SmartDashboard.putString("Lime Distance", Math.round(vGetDistance()) + "ft");
     }
 }

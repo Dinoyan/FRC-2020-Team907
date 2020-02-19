@@ -21,19 +21,19 @@ public class AutoStateMachine {
     private static AutoStateMachine mInstance = null;
 
     // ************ AUTO MODES ***************
-    private byte DEFAULT = 0;
-    private byte MIDDLE_SHOOT = 1;
-    private byte RIGHT_SHOOT = 2;
-    private byte LEFT_SHOOT = 3;
+    private byte DEFAULT        = 0;
+    private byte MIDDLE_SHOOT   = 1;
+    private byte RIGHT_SHOOT    = 2;
+    private byte LEFT_SHOOT     = 3;
     // private byte RIGHT_TRENCH_PICKUP = 4;
     // private byte LEFT_TRENCH_PICKUP = 5;
    
     // ************* STATES ******************
-    private byte DRIVE = 0;
-    private byte TURN = 1;
-    private byte SHOOT = 2;
+    private byte DRIVE  = 0;
+    private byte TURN   = 1;
+    private byte SHOOT  = 2;
     private byte INTAKE = 3;
-    private byte WAIT = 4;
+    private byte WAIT   = 4;
     private byte DRIVE_AND_INTAKE = 5;
 
     private byte currentState;
@@ -61,9 +61,9 @@ public class AutoStateMachine {
 
     public void init(byte selection) {
         // Subsystems
-        mDrive = Drivetrain.getInstance();
-        mShooter = Shooter.getInstance();
-        mIntake = Intake.getInstance();
+        mDrive      = Drivetrain.getInstance();
+        mShooter    = Shooter.getInstance();
+        mIntake     = Intake.getInstance();
 
         mDrivePID = new CyberPID();
         mTurnPID = new CyberPID();
@@ -81,12 +81,7 @@ public class AutoStateMachine {
     public void buildAuto(byte mode) {
         byte stateCounter = 0;
         if (DEFAULT == mode) {
-            nextStateArray[stateCounter] = DRIVE;
-            stateCounter++;
-            nextStateArray[stateCounter] = TURN;
-            stateCounter++;
-            nextStateArray[stateCounter] = WAIT;
-            stateCounter++;
+            nextStateArray[0] = DRIVE;
         } else if (MIDDLE_SHOOT == mode) {
 
         } else if (RIGHT_SHOOT == mode) {
