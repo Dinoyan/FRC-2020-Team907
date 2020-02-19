@@ -65,7 +65,7 @@ public class JoystickHandler {
     }
 
     public boolean getAutoAlign() {
-        return mShootStick.getRawButton(Constants.AUTO_ALIGN);
+        return mDriveStick.getRawButton(Constants.AUTO_ALIGN);
     }
 
     public double getManuallyShoot() {
