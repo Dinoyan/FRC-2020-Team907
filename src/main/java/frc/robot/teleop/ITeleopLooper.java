@@ -173,7 +173,7 @@ public class ITeleopLooper implements ITeleop {
                 } else if (mCorrection < 1.0) {
                     adjust = kP * mCorrection + min_command;
                 }
-                System.out.println("HEREE");
+
                 mDrive.drive(adjust * 0.2, adjust * 0.2);
                 break;
             case WAIT_FOR_VEL:
@@ -181,7 +181,7 @@ public class ITeleopLooper implements ITeleop {
                 
                 mShooter.BangBangControl(desiredVel);
                 
-                if (Math.abs(mShooter.getShooterSpeed() - desiredVEl) < 100) {
+                if (Math.abs(mShooter.getShooterSpeed() - desiredVel) < 100) {
                     mReadyToShoot = true;
                 } else {
                     mReadyToShoot = false;
