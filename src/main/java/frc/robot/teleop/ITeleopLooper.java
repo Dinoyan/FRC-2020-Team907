@@ -177,12 +177,15 @@ public class ITeleopLooper implements ITeleop {
                 mDrive.drive(adjust * 0.2, adjust * 0.2);
                 break;
             case WAIT_FOR_VEL:
-                if (Math.abs(mShooter.getShooterSpeed()) < 100) {
+                double desiredVel = 0;
+                
+                mShooter.BangBangControl(desiredVel);
+                
+                if (Math.abs(mShooter.getShooterSpeed() - desiredVEl) < 100) {
                     mReadyToShoot = true;
                 } else {
                     mReadyToShoot = false;
                 }
-                mShooter.shootCellClosed(600);
                 break;
             case MOVE_CONVEYOR:
                 mIntake.conveyorControl(Constants.CONTROL_CONVEYOR_SPEED);
