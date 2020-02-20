@@ -54,6 +54,7 @@ public class ITeleopLooper implements ITeleop {
         MOVE_CONVEYOR,
         MOVE_INTAKE,
         LIFT_HOOD,
+        HOOD_DOWN,
         STOP
     };
 
@@ -89,6 +90,10 @@ public class ITeleopLooper implements ITeleop {
         double right = mJoystick.getDriveRight();
 
         mDrive.drive(left, right);
+
+        if (mJoystick.getAutoAlign()) {
+            shooterStateController(mShooterState.ALIGN);
+        }
     }
 
     @Override
@@ -105,18 +110,25 @@ public class ITeleopLooper implements ITeleop {
             mIntake.frontIntake(false);
             mIntake.intakeCell(Constants.INTAKE_ROLLER_SPEED);
             mIntake.intakeRawSpeed(0.0, Constants.INTAKE_IDLE_SPEED);
-            mIntake.conveyorControl(Constants.CONTROL_CONVEYOR_SPEED);
+            if (mIntake.getAccPhoto()) {
+                mIntake.conveyorControl(Constants.CONTROL_CONVEYOR_SPEED);
+            }
+            
         } else {
             mIntake.frontIntake(true);
+            mIntake.conveyorControl(Constants.DEFAULT_CONVEYOR_SPEED);
         }
 
         if (mJoystick.getBackIntake()) {
             mIntake.backIntake(false);
             mIntake.intakeCell(Constants.INTAKE_ROLLER_SPEED);
             mIntake.intakeRawSpeed(Constants.INTAKE_IDLE_SPEED, 0.0);
-            mIntake.conveyorControl(Constants.CONTROL_CONVEYOR_SPEED);
+            if (mIntake.getAccPhoto()) {
+                mIntake.conveyorControl(Constants.CONTROL_CONVEYOR_SPEED);
+            }
         } else {
             mIntake.backIntake(true);
+            mIntake.conveyorControl(Constants.DEFAULT_CONVEYOR_SPEED);
         }
 
         if (!mJoystick.getBackIntake() && !mJoystick.getFrontIntake()) {
@@ -139,13 +151,8 @@ public class ITeleopLooper implements ITeleop {
         if (shootValue > 0.1) {
             mShooter.controlHood(true);
 
-            // mShooter.shootCellOpen(1);
-            // mShooter.bangBangControl(185.0 * this.mLimelight.vGetDistance() + 1900.0);
-            // mShooter.bangBangControl(7000 * shootValue);
-
             mShooter.BangBangControl((6.38 * Math.pow(this.mLimelight.vGetDistance(), 2))
                     + (148 * this.mLimelight.vGetDistance()) + 2000);
-            // System.out.println((6.38 * Math.pow(this.mLimelight.vGetDistance(), 2)) + (148 * this.mLimelight.vGetDistance()));
 
             mCompressor.stop();
 
@@ -155,16 +162,25 @@ public class ITeleopLooper implements ITeleop {
                 mIntake.intakeRawSpeed(Constants.INTAKE_ROLLER_SPEED, Constants.INTAKE_ROLLER_SPEED);
             }
 
-        } else {
+        }
+
+        // auto shooter
+        if (mJoystick.getShootBtn()) {
+            mCompressor.stop();
+            shooterStateController(mShooterState.LIFT_HOOD);
+            shooterStateController(mShooterState.WAIT_FOR_VEL);
+
+            if (mReadyToShoot) {
+                shooterStateController(mShooterState.SHOOT);
+            }
+        }
+
+        if (!mJoystick.getShootBtn() && (mJoystick.getManuallyShoot() < 0.1)) {
             mShooter.shootCellOpen(Constants.DEFAULT_SHOOTER_SPEED);
             mShooter.controlHood(false);
             mCompressor.start();
             mShooter.controlAcc(0.0);
         }
-
-        shooterStateController(mShooterState.ALIGN);
-
-
     }
     
     private void shooterStateController(mShooterState state) {
@@ -186,7 +202,8 @@ public class ITeleopLooper implements ITeleop {
                 mDrive.drive(adjust * 0.2, adjust * 0.2);
                 break;
             case WAIT_FOR_VEL:
-                double desiredVel = 0;
+                double desiredVel = (6.38 * Math.pow(this.mLimelight.vGetDistance(), 2))
+                + (148 * this.mLimelight.vGetDistance()) + 2000;
                 
                 mShooter.BangBangControl(desiredVel);
                 
@@ -204,6 +221,9 @@ public class ITeleopLooper implements ITeleop {
                 break;
             case LIFT_HOOD:
                 mShooter.controlHood(true);
+                break;
+            case HOOD_DOWN:
+                mShooter.controlHood(false);
                 break;
             case STOP:
                 mShooter.stop();

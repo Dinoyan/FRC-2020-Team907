@@ -41,6 +41,10 @@ public class Constants {
      public final static double INTAKE_ROLLER_SPEED = 0.75;
      public final static double INTAKE_IDLE_SPEED = 0.25;
      public final static double VOMIT_SPEED = -0.5;
+
+     public final static int[] FRONT_PHOTO = {0, 1};
+     public final static int[] CONV_PHOTO = {2,3};
+     public final static int[] ACC_PHOTO = {4,5};
  
      // ****************** JOYSTICKS ************************
      public final static int DRIVE_STICK = 0;
