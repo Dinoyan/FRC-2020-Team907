@@ -61,12 +61,12 @@ public class AutoStateMachine {
 
     public void init(byte selection) {
         // Subsystems
-        mDrive      = Drivetrain.getInstance();
-        mShooter    = Shooter.getInstance();
-        mIntake     = Intake.getInstance();
+        mDrive = Drivetrain.getInstance();
+        mShooter = Shooter.getInstance();
+        mIntake = Intake.getInstance();
 
-        mDrivePID = new CyberPID();
-        mTurnPID = new CyberPID();
+        mDrivePID = new CyberPID(Constants.DRIVE_PID[0], Constants.DRIVE_PID[1], Constants.DRIVE_PID[2]);
+        mTurnPID = new CyberPID(Constants.TURN_PID[0], Constants.TURN_PID[1], Constants.TURN_PID[2]);
 
         mDrivePID.setTolerance(2);
         mTurnPID.setTolerance(1);
@@ -79,9 +79,9 @@ public class AutoStateMachine {
     }
 
     public void buildAuto(byte mode) {
-        byte stateCounter = 0;
         if (DEFAULT == mode) {
-            nextStateArray[0] = DRIVE;
+            byte[] statesOrder = {DRIVE, (byte) 12};
+            fillStateArray(statesOrder);
         } else if (MIDDLE_SHOOT == mode) {
 
         } else if (RIGHT_SHOOT == mode) {
@@ -89,7 +89,12 @@ public class AutoStateMachine {
         } else if (LEFT_SHOOT == mode) {
 
         } 
+        
         setCurrentState(nextStateArray[currentStateIndex]);
+    }
+
+    public void fillStateArray(byte[] states) {
+        nextStateArray = states;
     }
 
     public void setCurrentState(byte state) {
@@ -99,9 +104,9 @@ public class AutoStateMachine {
     public void autonomousEnabledLoop() {
 
         if (currentState == DRIVE) {
-            drive(179);
+            drive((double) nextStateArray[currentStateIndex + 1]);
         } else if (currentState == TURN) {
-            turn(90);
+            turn((double) nextStateArray[currentStateIndex + 1]);
         } else if (currentState == SHOOT) {
             shoot();
         } else if (currentState == INTAKE) {
@@ -136,7 +141,7 @@ public class AutoStateMachine {
 
         } else if (onTarget){
             mDrive.drive(0, 0);
-            currentStateIndex++;
+            currentStateIndex += 2;
             setCurrentState(nextStateArray[currentStateIndex]);
             mDrivePID.reset();
             mDrive.zeroSensors();
@@ -154,7 +159,7 @@ public class AutoStateMachine {
 
         } else if (onTarget) {
             mDrive.drive(0, 0);
-            currentStateIndex++;
+            currentStateIndex += 2;
             setCurrentState(nextStateArray[currentStateIndex]);
             mTurnPID.reset();
             mDrive.zeroSensors();
@@ -167,7 +172,7 @@ public class AutoStateMachine {
         if (!doneShooting) {
             mShooter.shootCellClosed(600);
         } else if (doneShooting) {
-            currentStateIndex++;
+            currentStateIndex += 2;
             setCurrentState(nextStateArray[currentStateIndex]);
         }
     }
