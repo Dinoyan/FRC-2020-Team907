@@ -10,8 +10,10 @@ package frc.robot.subsystem;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
 
 /**
@@ -29,6 +31,10 @@ public class Intake extends Subsystem{
     private DoubleSolenoid mFrontPistons;
     private DoubleSolenoid mBackPistons;
 
+    private DigitalInput mFrontPhotoOne;
+    private DigitalInput mAccPhoto;
+    private DigitalInput mConveyorPhoto;
+
     public static Intake getInstance() {
         if (mInstance == null) {
             mInstance = new Intake();
@@ -45,6 +51,10 @@ public class Intake extends Subsystem{
 
         mFrontPistons = new DoubleSolenoid(Constants.FRONT_PISTONS[0], Constants.FRONT_PISTONS[1]);
         mBackPistons = new DoubleSolenoid(Constants.BACK_PISTONS[0], Constants.BACK_PISTONS[1]);
+
+        mFrontPhotoOne = new DigitalInput(Constants.FRONT_PHOTO[0]);
+        mAccPhoto = new DigitalInput(Constants.ACC_PHOTO[0]);
+        mConveyorPhoto = new DigitalInput(Constants.CONV_PHOTO[0]);
     }
 
     @Override
@@ -66,6 +76,9 @@ public class Intake extends Subsystem{
 
     @Override
     public void updateDashboard() {
+        SmartDashboard.putBoolean("Front Intake", getFrontPhoto());
+        SmartDashboard.putBoolean("Acc", getConvPhoto());
+        SmartDashboard.putBoolean("Conv", getAccPhoto());
     
     }
 
@@ -118,6 +131,18 @@ public class Intake extends Subsystem{
         } else {
             mBackPistons.set(Value.kReverse);
         }
+    }
+
+    public boolean getFrontPhoto() {
+        return mFrontPhotoOne.get();
+    }
+
+    public boolean getConvPhoto() {
+        return mConveyorPhoto.get();
+    }
+
+    public boolean getAccPhoto() {
+        return mAccPhoto.get();
     }
 
 }
