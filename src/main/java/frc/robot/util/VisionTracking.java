@@ -73,6 +73,10 @@ public class VisionTracking {
         return mArea;
     }
 
+    public void setLEDMode(double mode) {
+        mTable.getEntry("ledMode").setNumber(mode);
+    }
+
     public void updateDashboard() {
         SmartDashboard.putString("Lime Angle", Math.round(getX()) + " deg");
         SmartDashboard.putString("Lime Distance", Math.round(vGetDistance()) + "ft");
