@@ -82,6 +82,7 @@ public class AutoStateMachine {
         if (DEFAULT == mode) {
             byte[] statesOrder = {DRIVE, (byte) 12};
             fillStateArray(statesOrder);
+
         } else if (MIDDLE_SHOOT == mode) {
 
         } else if (RIGHT_SHOOT == mode) {
@@ -108,12 +109,12 @@ public class AutoStateMachine {
         } else if (currentState == TURN) {
             turn((double) nextStateArray[currentStateIndex + 1]);
         } else if (currentState == SHOOT) {
-            shoot();
+            shoot((int) nextStateArray[currentState + 1]);
         } else if (currentState == INTAKE) {
-            mIntake.frontIntake(true);
+            intake((int) nextStateArray[currentState + 1]);
         } else if (currentState == DRIVE_AND_INTAKE) {
-            // drive(4);
-            // intake();
+            intake((int) nextStateArray[currentState + 1]);
+            drive((double) nextStateArray[currentStateIndex + 1]);
         } else if(currentState ==  WAIT){
             
         }
@@ -166,14 +167,42 @@ public class AutoStateMachine {
         }
     }
 
-    private void shoot() {
+    private void shoot(int numCells) {
         boolean doneShooting = false;
+        int count = 0;
 
         if (!doneShooting) {
-            mShooter.shootCellClosed(600);
+            if (!mIntake.getAccPhoto()) {
+                count++;
+                doneShooting = count > numCells;
+            }
+            mShooter.BangBangControl(1000);
+
+            if (Math.abs(mShooter.getShooterSpeed() - 1000) < 100) {
+                mShooter.controlAcc(1.0);
+                mIntake.conveyorControl(Constants.CONTROL_CONVEYOR_SPEED);
+                mIntake.intakeRawSpeed(Constants.INTAKE_ROLLER_SPEED, Constants.INTAKE_ROLLER_SPEED);
+            }
+            
         } else if (doneShooting) {
+            mShooter.stop();
+            mShooter.zeroSensors();
             currentStateIndex += 2;
             setCurrentState(nextStateArray[currentStateIndex]);
         }
     }
+
+    private void intake(int inWay) {
+        if (inWay == 0) {
+            mIntake.frontIntake(false);
+            mIntake.intakeRawSpeed(Constants.INTAKE_ROLLER_SPEED, Constants.INTAKE_ROLLER_SPEED);
+        } else {
+            mIntake.backIntake(false);
+            mIntake.intakeRawSpeed(Constants.INTAKE_ROLLER_SPEED, Constants.INTAKE_ROLLER_SPEED);
+        }
+
+        currentStateIndex += 2;
+        setCurrentState(nextStateArray[currentStateIndex]);
+    }
+
 }
