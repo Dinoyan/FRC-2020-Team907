@@ -17,6 +17,9 @@ public class AutoSelector {
 
     private static final String kJustDrive = "Default";
     private static final String kMiddleShoot = "Middle Shoot";
+    private static final String kLeftShoot = "Left Shoot";
+    private static final String kRightShoot = "Right Shoot";
+    private static final String kRightTrench = "Right Trench";
 
     private final SendableChooser<String> mChooser = new SendableChooser<>();
 
@@ -35,7 +38,10 @@ public class AutoSelector {
 
     public AutoSelector() {
         mChooser.setDefaultOption("Just Drive", kJustDrive);
-        mChooser.addOption("Center Shoot", kMiddleShoot);
+        mChooser.addOption("Middle Shoot", kMiddleShoot);
+        mChooser.addOption("Left Shoot", kLeftShoot);
+        mChooser.addOption("Right Shoot", kRightShoot);
+        mChooser.addOption("Right Trench", kRightTrench);
 
         SmartDashboard.putData(mChooser);
     }
@@ -50,6 +56,17 @@ public class AutoSelector {
             
             case kMiddleShoot:
                 mMode = 1;
+                break;
+            case kLeftShoot:
+                mMode = 3;
+                break;
+
+            case kRightShoot:
+                mMode = 2;
+                break;
+
+            case kRightTrench:
+                mMode = 4;
                 break;
         }
         return mMode;

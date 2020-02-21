@@ -25,8 +25,7 @@ public class AutoStateMachine {
     private byte MIDDLE_SHOOT   = 1;
     private byte RIGHT_SHOOT    = 2;
     private byte LEFT_SHOOT     = 3;
-    // private byte RIGHT_TRENCH_PICKUP = 4;
-    // private byte LEFT_TRENCH_PICKUP = 5;
+    private byte RIGHT_TRENCH_PICKUP = 4;
    
     // ************* STATES ******************
     private byte DRIVE  = 0;
@@ -37,10 +36,9 @@ public class AutoStateMachine {
     private byte DRIVE_AND_INTAKE = 5;
 
     private byte currentState;
-    private byte currentStateIndex = 0;
+    private byte currentStateIndex;
     private byte[] nextStateArray = new byte[255];
 
-    private boolean mStop = false;
     private Timer mTimer = new Timer();
 
     // PIDs
@@ -74,13 +72,11 @@ public class AutoStateMachine {
         currentStateIndex = 0;
         setCurrentState(WAIT);
         buildAuto(selection);
-
-        mTimer.start();
     }
 
     public void buildAuto(byte mode) {
         if (DEFAULT == mode) {
-            byte[] statesOrder = {DRIVE, (byte) 12};
+            byte[] statesOrder = {DRIVE, (byte) 12, SHOOT, (byte) 3};
             fillStateArray(statesOrder);
 
         } else if (MIDDLE_SHOOT == mode) {
@@ -89,7 +85,9 @@ public class AutoStateMachine {
 
         } else if (LEFT_SHOOT == mode) {
 
-        } 
+        } else if (RIGHT_TRENCH_PICKUP == mode) {
+
+        }
         
         setCurrentState(nextStateArray[currentStateIndex]);
     }
@@ -118,13 +116,6 @@ public class AutoStateMachine {
         } else if(currentState ==  WAIT){
             
         }
-    }
-
-    private boolean infLoopChecker() {
-        if (mTimer.get() > Constants.AUTO_TIME) {
-            mStop = true;
-        }
-        return mStop;
     }
 
     // **************************************
@@ -193,16 +184,15 @@ public class AutoStateMachine {
     }
 
     private void intake(int inWay) {
-        if (inWay == 0) {
-            mIntake.frontIntake(false);
-            mIntake.intakeRawSpeed(Constants.INTAKE_ROLLER_SPEED, Constants.INTAKE_ROLLER_SPEED);
-        } else {
-            mIntake.backIntake(false);
-            mIntake.intakeRawSpeed(Constants.INTAKE_ROLLER_SPEED, Constants.INTAKE_ROLLER_SPEED);
-        }
-
-        currentStateIndex += 2;
-        setCurrentState(nextStateArray[currentStateIndex]);
+        mTimer.start();
+        if (mTimer.get() < 5) {
+            if (inWay == 0) {
+                mIntake.frontIntake(false);
+                mIntake.intakeRawSpeed(Constants.INTAKE_ROLLER_SPEED, Constants.INTAKE_ROLLER_SPEED);
+            } else {
+                mIntake.backIntake(false);
+                mIntake.intakeRawSpeed(Constants.INTAKE_ROLLER_SPEED, Constants.INTAKE_ROLLER_SPEED);
+            }
+        }  
     }
-
 }
