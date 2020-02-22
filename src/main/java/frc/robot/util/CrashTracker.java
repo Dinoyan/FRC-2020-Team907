@@ -7,12 +7,15 @@
 
 package frc.robot.util;
 
+import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  * Add your docs here.
  */
 public class CrashTracker {
+    private static PowerDistributionPanel pdp = new PowerDistributionPanel();
+
     public static void logRobotConstruction() {
         logNow("robot startup");
     }
@@ -25,6 +28,11 @@ public class CrashTracker {
     public static void logTeleopInit() {
         logNow("teleop init");
 
+    }
+
+    public static void robotStatus() {
+        double voltage = pdp.getVoltage();
+        SmartDashboard.putString("Battery Charge", Math.round(((voltage - 10.5) / 2.8) * 100.0) + " %");
     }
 
     public static void logAutoInit() {
