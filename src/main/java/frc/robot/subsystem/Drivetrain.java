@@ -9,6 +9,7 @@ package frc.robot.subsystem;
 
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.kauailabs.navx.frc.AHRS;
 
@@ -32,6 +33,8 @@ public class Drivetrain extends Subsystem {
     private WPI_TalonFX mLSlave;
     private WPI_TalonFX mRMaster;
     private WPI_TalonFX mRSlave;
+
+    private SupplyCurrentLimitConfiguration currentLimit = new SupplyCurrentLimitConfiguration();
 
     private AHRS navx;
 
@@ -59,6 +62,17 @@ public class Drivetrain extends Subsystem {
 
         mRMaster.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor, 0, 10);
         mLMaster.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor, 0, 10);
+
+        // currentLimit.currentLimit = 40;
+        // currentLimit.triggerThresholdCurrent = 35;
+        // currentLimit.enable = true;
+
+        // mRMaster.configSupplyCurrentLimit(currentLimit, 0);
+        // mLMaster.configSupplyCurrentLimit(currentLimit, 0);
+
+        // mRMaster.configOpenloopRamp(4);
+        // mLMaster.configOpenloopRamp(4);
+
 
         navx = new AHRS(SPI.Port.kMXP);
     }
@@ -88,7 +102,7 @@ public class Drivetrain extends Subsystem {
     }
 
     public void drive(double left, double right) {
-       if (Math.abs(left) > 0.05 || Math.abs(right) > 0.05) {
+       if (Math.abs(left) > 0.08 || Math.abs(right) > 0.08) {
         this.mRMaster.set(-right);
         this.mRSlave.set(-right);
         this.mLMaster.set(left);
