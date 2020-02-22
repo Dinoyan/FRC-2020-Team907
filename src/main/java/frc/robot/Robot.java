@@ -7,6 +7,7 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.TimedRobot;
 import frc.robot.auto.AutoSelector;
 import frc.robot.auto.AutoStateMachine;
@@ -49,6 +50,8 @@ public class Robot extends TimedRobot {
 
    private byte mAutoMode = 0;
 
+   PowerDistributionPanel pdp = new PowerDistributionPanel();
+
   @Override
   public void robotInit() {
     mSubsystemManager = SubsystemManager.getInstance();
@@ -58,6 +61,8 @@ public class Robot extends TimedRobot {
     mIntake = Intake.getInstance();
     mHook = Hook.getInstance();
     mCWPanel = CWPanel.getInstance();
+
+    //pdp.clearStickyFaults();
 
     mAutoSelector = AutoSelector.getInstance();
     mAutoStateMachine = AutoStateMachine.getInstance();
@@ -79,6 +84,14 @@ public class Robot extends TimedRobot {
   }
 
   @Override
+  public void robotPeriodic() {
+    mSubsystemManager.outPutDashboard();
+    CrashTracker.robotStatus();
+    mLimelight.updateDashboard();
+
+  }
+
+  @Override
   public void disabledInit() {
     mDrive.switchToCoast();
   }
@@ -91,27 +104,21 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousInit() {
     mSubsystemManager.zeroAll();
-    mSubsystemManager.outPutDashboard();
 
     mAutoMode = mAutoSelector.getAutoMode();
     mAutoStateMachine.init(mAutoMode);
-
-    mDrive.switchToBrake();
 
     CrashTracker.logAutoInit();
   }
 
   @Override
   public void autonomousPeriodic() {
-    mSubsystemManager.outPutDashboard();
-
     mAutoStateMachine.autonomousEnabledLoop();
   }
 
   @Override
   public void teleopInit() {
     mSubsystemManager.zeroAll();
-    mSubsystemManager.outPutDashboard();
 
     mTeleopLooper.init();
 
@@ -122,9 +129,6 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopPeriodic() {
-    mSubsystemManager.outPutDashboard();
-    mLimelight.updateDashboard();
-
     mTeleopLooper.driveEnabledLoop();
     mTeleopLooper.superstructureEnabledLoop();
   }

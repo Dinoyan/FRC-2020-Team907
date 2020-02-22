@@ -59,7 +59,7 @@ public class Shooter extends Subsystem {
 
         // TO-DO:
         // configure sensor
-        mShooterMaster.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute, 0, 10);
+        mShooterMaster.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, 10);
 
         mShooterMaster.setSensorPhase(true);
 
@@ -69,10 +69,10 @@ public class Shooter extends Subsystem {
         mShooterMaster.configPeakOutputReverse(-1);
 
         // set kF to 0 and tune from there
-        mShooterMaster.config_kP(0, 0.1);
+        mShooterMaster.config_kP(0, 0.01);
         mShooterMaster.config_kI(0, 0);
-        mShooterMaster.config_kD(0, 0.1);
-        mShooterMaster.config_kF(0, 0);
+        mShooterMaster.config_kD(0, 0.0);
+        mShooterMaster.config_kF(0, 0.1);
     }
 
     @Override
@@ -93,7 +93,7 @@ public class Shooter extends Subsystem {
 
     @Override
     public void updateDashboard() {
-        SmartDashboard.putNumber("Shooter Speed", getShooterSpeed());
+        SmartDashboard.putString("Shooter Speed", Math.round(getShooterSpeed()) + " RPM");
     }
 
     public void shootCellOpen(double speed) {
@@ -103,7 +103,7 @@ public class Shooter extends Subsystem {
 
     // closed loop control
     public void shootCellClosed(double _velocity) {
-        mShooterMaster.set(ControlMode.Velocity, _velocity);
+        mShooterMaster.set(ControlMode.Velocity, _velocity / 600.0 * 4096.0);
     }
 
     public void vomitCell(double speed) {
@@ -121,17 +121,20 @@ public class Shooter extends Subsystem {
     }
 
     public void controlAcc(double speed) {
-        mAcc.set(speed);
+        mAcc.set(-speed);
     }
 
     // return shooter velocity
     public double getShooterSpeed() {
-        mVelocity = mShooterMaster.getSelectedSensorVelocity();
+        mVelocity = mShooterMaster.getSelectedSensorVelocity() * 600.0 / 4096.0;
         return mVelocity;
     }
 
     // bang-bang control
     public void BangBangControl(double value) {
+        mShooterMaster.configContinuousCurrentLimit(40, 0);
+        mShooterSlave.configContinuousCurrentLimit(40, 0);
+
         if (getShooterSpeed() < value) {
             shootCellOpen(1);
         } else {

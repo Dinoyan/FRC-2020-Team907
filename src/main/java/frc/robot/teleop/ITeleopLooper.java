@@ -43,7 +43,7 @@ public class ITeleopLooper implements ITeleop {
     Compressor mCompressor = new Compressor();
 
     // aiming constants
-    float kP = -0.1f;
+    float kP = -0.15f;
     float min_command = 0.05f;
 
     // shooter states
@@ -93,7 +93,10 @@ public class ITeleopLooper implements ITeleop {
 
         if (mJoystick.getAutoAlign()) {
             shooterStateController(mShooterState.ALIGN);
+            mLimelight.setLEDMode(3);
         }
+
+        mLimelight.setLEDMode(1);
     }
 
     @Override
@@ -181,6 +184,8 @@ public class ITeleopLooper implements ITeleop {
             mCompressor.start();
             mShooter.controlAcc(0.0);
         }
+
+        mLimelight.setLEDMode(1);
     }
     
     private void shooterStateController(mShooterState state) {
@@ -199,9 +204,10 @@ public class ITeleopLooper implements ITeleop {
                     adjust = kP * mCorrection + min_command;
                 }
 
-                mDrive.drive(adjust * 0.2, adjust * 0.2);
+                mDrive.drive(adjust * 0.2, adjust * -0.2);
                 break;
             case WAIT_FOR_VEL:
+                mLimelight.setLEDMode(3);
                 double desiredVel = (6.38 * Math.pow(this.mLimelight.vGetDistance(), 2))
                 + (148 * this.mLimelight.vGetDistance()) + 2000;
                 
