@@ -43,7 +43,7 @@ public class ITeleopLooper implements ITeleop {
     Compressor mCompressor = new Compressor();
 
     // aiming constants
-    float kP = -0.1f;
+    float kP = -0.15f;
     float min_command = 0.05f;
 
     // shooter states
@@ -204,7 +204,7 @@ public class ITeleopLooper implements ITeleop {
                     adjust = kP * mCorrection + min_command;
                 }
 
-                mDrive.drive(adjust * 0.2, adjust * 0.2);
+                mDrive.drive(adjust * 0.2, adjust * -0.2);
                 break;
             case WAIT_FOR_VEL:
                 mLimelight.setLEDMode(3);
