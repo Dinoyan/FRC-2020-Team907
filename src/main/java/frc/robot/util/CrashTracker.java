@@ -33,6 +33,7 @@ public class CrashTracker {
     public static void robotStatus() {
         double voltage = pdp.getVoltage();
         SmartDashboard.putString("Battery Charge", Math.round(((voltage - 10.5) / 2.8) * 100.0) + " %");
+
     }
 
     public static void logAutoInit() {
