@@ -43,8 +43,8 @@ public class ITeleopLooper implements ITeleop {
     Compressor mCompressor = new Compressor();
 
     // aiming constants
-    float kP = -0.15f;
-    float min_command = 0.05f;
+    float kP = -0.2f;
+    float min_command = 0.09f;
 
     // shooter states
     private enum mShooterState {
@@ -82,6 +82,8 @@ public class ITeleopLooper implements ITeleop {
         mCompressor.start();
 
         teleopTime.start();
+
+        mLimelight.setLEDMode(3);
     }
 
     @Override
@@ -93,10 +95,10 @@ public class ITeleopLooper implements ITeleop {
 
         if (mJoystick.getAutoAlign()) {
             shooterStateController(mShooterState.ALIGN);
-            mLimelight.setLEDMode(3);
+            // mLimelight.setLEDMode(3);
         }
 
-        mLimelight.setLEDMode(1);
+        // mLimelight.setLEDMode(1);
     }
 
     @Override
@@ -112,9 +114,11 @@ public class ITeleopLooper implements ITeleop {
         if (mJoystick.getFrontIntake()) {
             mIntake.frontIntake(false);
             mIntake.intakeCell(Constants.INTAKE_ROLLER_SPEED);
-            mIntake.intakeRawSpeed(0.0, Constants.INTAKE_IDLE_SPEED);
-            if (mIntake.getAccPhoto()) {
+            // mIntake.intakeRawSpeed(0.0, Constants.INTAKE_IDLE_SPEED);
+            if (!mIntake.getAccPhoto()) {
                 mIntake.conveyorControl(Constants.CONTROL_CONVEYOR_SPEED);
+            } else {
+                mIntake.conveyorControl(Constants.DEFAULT_CONVEYOR_SPEED);
             }
             
         } else {
@@ -125,9 +129,12 @@ public class ITeleopLooper implements ITeleop {
         if (mJoystick.getBackIntake()) {
             mIntake.backIntake(false);
             mIntake.intakeCell(Constants.INTAKE_ROLLER_SPEED);
-            mIntake.intakeRawSpeed(Constants.INTAKE_IDLE_SPEED, 0.0);
-            if (mIntake.getAccPhoto()) {
+            // mIntake.intakeRawSpeed(Constants.INTAKE_IDLE_SPEED, 0.0);
+            // mIntake.conveyorControl(Constants.CONTROL_CONVEYOR_SPEED);
+            if (!mIntake.getAccPhoto()) {
                 mIntake.conveyorControl(Constants.CONTROL_CONVEYOR_SPEED);
+            } else {
+                mIntake.conveyorControl(Constants.DEFAULT_CONVEYOR_SPEED);
             }
         } else {
             mIntake.backIntake(true);
@@ -185,7 +192,7 @@ public class ITeleopLooper implements ITeleop {
             mShooter.controlAcc(0.0);
         }
 
-        mLimelight.setLEDMode(1);
+        // mLimelight.setLEDMode(1);
     }
     
     private void shooterStateController(mShooterState state) {
@@ -207,7 +214,7 @@ public class ITeleopLooper implements ITeleop {
                 mDrive.drive(adjust * 0.2, adjust * -0.2);
                 break;
             case WAIT_FOR_VEL:
-                mLimelight.setLEDMode(3);
+                // mLimelight.setLEDMode(3);
                 double desiredVel = (6.38 * Math.pow(this.mLimelight.vGetDistance(), 2))
                 + (148 * this.mLimelight.vGetDistance()) + 2000;
                 
