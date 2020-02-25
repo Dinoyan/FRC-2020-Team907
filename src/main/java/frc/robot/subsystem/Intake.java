@@ -77,8 +77,8 @@ public class Intake extends Subsystem{
     @Override
     public void updateDashboard() {
         SmartDashboard.putBoolean("Front Intake", getFrontPhoto());
-        SmartDashboard.putBoolean("Acc", getConvPhoto());
-        SmartDashboard.putBoolean("Conv", getAccPhoto());
+        SmartDashboard.putBoolean("Conv", getConvPhoto());
+        SmartDashboard.putBoolean("Acc", getAccPhoto());
     
     }
 
