@@ -66,7 +66,7 @@ public class AutoStateMachine {
         mDrivePID = new CyberPID(Constants.DRIVE_PID[0], Constants.DRIVE_PID[1], Constants.DRIVE_PID[2]);
         mTurnPID = new CyberPID(Constants.TURN_PID[0], Constants.TURN_PID[1], Constants.TURN_PID[2]);
 
-        mDrivePID.setTolerance(2);
+        mDrivePID.setTolerance(1);
         mTurnPID.setTolerance(1);
 
         currentStateIndex = 0;
@@ -76,17 +76,45 @@ public class AutoStateMachine {
 
     public void buildAuto(byte mode) {
         if (DEFAULT == mode) {
-            byte[] statesOrder = {DRIVE, (byte) 12, SHOOT, (byte) 3};
+            byte[] statesOrder = {TURN, (byte) 30, TURN, (byte) -30, DRIVE, (byte) -90, 
+                DRIVE, (byte) 90,  
+                TURN, (byte) 30, WAIT, (byte) 1};
             fillStateArray(statesOrder);
 
         } else if (MIDDLE_SHOOT == mode) {
+            byte[] statesOrder = {
+                                    SHOOT, (byte) 3, 
+                                    DRIVE, (byte)  12
+                                };
+            fillStateArray(statesOrder);
 
         } else if (RIGHT_SHOOT == mode) {
+            byte[] statesOrder = {
+                                    TURN, (byte) -30, 
+                                    SHOOT, (byte) 3, 
+                                    DRIVE, (byte) 20
+                                };
+            fillStateArray(statesOrder);
 
         } else if (LEFT_SHOOT == mode) {
+            byte[] statesOrder = {
+                                    TURN, (byte) 30, 
+                                    SHOOT, (byte) 3, 
+                                    DRIVE, (byte) 20
+                                };
+            fillStateArray(statesOrder);
 
         } else if (RIGHT_TRENCH_PICKUP == mode) {
-
+            byte[] statesOrder = {
+                                    TURN, (byte) 30, 
+                                    SHOOT, (byte) 3, 
+                                    TURN, (byte) 0, 
+                                    DRIVE, (byte) 5, 
+                                    DRIVE_AND_INTAKE, (byte) 10,
+                                    TURN, (byte) 20,
+                                    SHOOT, (byte) 3,
+                                };
+            fillStateArray(statesOrder);
         }
         
         setCurrentState(nextStateArray[currentStateIndex]);
@@ -104,6 +132,7 @@ public class AutoStateMachine {
 
         if (currentState == DRIVE) {
             drive((double) nextStateArray[currentStateIndex + 1]);
+            // drive(60);
         } else if (currentState == TURN) {
             turn((double) nextStateArray[currentStateIndex + 1]);
         } else if (currentState == SHOOT) {
@@ -129,9 +158,10 @@ public class AutoStateMachine {
         if (!onTarget) {
             onTarget = mDrivePID.onTarget(mDrive.getRightDistance());
             double value = mDrivePID.getOutput(mDrive.getRightDistance());
-            mDrive.drive(value * .5, value * .5);
+            mDrive.drive(value * .45, value * .45);
 
         } else if (onTarget){
+            System.out.println("HOT");
             mDrive.drive(0, 0);
             currentStateIndex += 2;
             setCurrentState(nextStateArray[currentStateIndex]);
@@ -147,7 +177,7 @@ public class AutoStateMachine {
         if (!onTarget) {
             onTarget = mTurnPID.onTarget(mDrive.getAngle());
             double value = mTurnPID.getOutput(mDrive.getAngle());
-            mDrive.drive(-value * .5, value * .5);
+            mDrive.drive(-value * .6, value * .6);
 
         } else if (onTarget) {
             mDrive.drive(0, 0);
