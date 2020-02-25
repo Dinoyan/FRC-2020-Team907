@@ -80,7 +80,11 @@ public class Drivetrain extends Subsystem {
         // mRMaster.configOpenloopRamp(4);
         // mLMaster.configOpenloopRamp(4);
 
-        navx = new AHRS(SPI.Port.kMXP);
+        try {
+            navx = new AHRS(SPI.Port.kMXP);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -97,7 +101,7 @@ public class Drivetrain extends Subsystem {
 
     @Override
     public Boolean checkSystem() {
-        return null;
+        return navx.isConnected();
     }
 
     @Override
@@ -108,7 +112,7 @@ public class Drivetrain extends Subsystem {
     }
 
     public void drive(double left, double right) {
-       if (Math.abs(left) > 0.08 || Math.abs(right) > 0.08) {
+       if (Math.abs(left) > 0.15 || Math.abs(right) > 0.15) {
         this.mRMaster.set(-right);
         this.mRSlave.set(ControlMode.PercentOutput, -right);
         this.mLMaster.set(left);
@@ -138,7 +142,9 @@ public class Drivetrain extends Subsystem {
     }
 
     public double getAngle() {
-        mAngle = navx.getAngle();
+        // mAngle = navx.getAngle();
+        mAngle = Math.tanh((this.getLeftDistance() + this.getRightDistance()) / 24.55);
+        mAngle = Math.toDegrees(mAngle);
         return mAngle;
     }
 
