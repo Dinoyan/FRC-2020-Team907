@@ -39,12 +39,12 @@ public class Constants {
      public final static int CONVEYOR_MOTOR = 6;
  
      public final static double INTAKE_ROLLER_SPEED = 0.75;
-     public final static double INTAKE_IDLE_SPEED = 0.25;
+     public final static double INTAKE_IDLE_SPEED = 0.75;
      public final static double VOMIT_SPEED = -0.5;
 
      public final static int[] FRONT_PHOTO = {0, 1};
-     public final static int[] CONV_PHOTO = {2,3};
-     public final static int[] ACC_PHOTO = {4,5};
+     public final static int[] CONV_PHOTO = {5,3};
+     public final static int[] ACC_PHOTO = {2,5};
  
      // ****************** JOYSTICKS ************************
      public final static int DRIVE_STICK = 0;
@@ -66,8 +66,8 @@ public class Constants {
      public final static int CLIMB_AXIS = 2;
  
      // ********************* PID ***************************
-     public final static double[] DRIVE_PID  = {0.1, 0.1, 0.1};
-     public final static double[] TURN_PID = {0.1, 0.1, 0.1};
+     public final static double[] DRIVE_PID  = {0.2, 0.01, 0.05};
+     public final static double[] TURN_PID = {0.1, 0.0, 0.02};
      public final static double[] CW_PID = {0.1, 0.1, 0.1};
      public final static double[] SHOOTER_PID = {0.1, 0.1, 0.1};
  

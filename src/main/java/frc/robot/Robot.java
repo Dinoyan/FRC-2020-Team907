@@ -62,7 +62,6 @@ public class Robot extends TimedRobot {
     mHook = Hook.getInstance();
     mCWPanel = CWPanel.getInstance();
 
-    //pdp.clearStickyFaults();
 
     mAutoSelector = AutoSelector.getInstance();
     mAutoStateMachine = AutoStateMachine.getInstance();
@@ -109,6 +108,8 @@ public class Robot extends TimedRobot {
     mAutoStateMachine.init(mAutoMode);
 
     CrashTracker.logAutoInit();
+
+    mDrive.switchToBrake();
   }
 
   @Override
@@ -140,6 +141,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void testPeriodic() {
+    pdp.clearStickyFaults();
   }
 
 }
