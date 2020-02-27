@@ -41,6 +41,9 @@ public class AutoStateMachine {
 
     private Timer mTimer = new Timer();
 
+    private boolean mLastShootState = true;
+    private int count = 0;
+
     // PIDs
     private CyberPID mDrivePID;
     private CyberPID mTurnPID;
@@ -133,6 +136,7 @@ public class AutoStateMachine {
         if (currentState == DRIVE) {
             drive((double) nextStateArray[currentStateIndex + 1]);
             // drive(60);
+            mIntake.intakeRawSpeed(0, 0);
         } else if (currentState == TURN) {
             turn((double) nextStateArray[currentStateIndex + 1]);
         } else if (currentState == SHOOT) {
@@ -161,7 +165,6 @@ public class AutoStateMachine {
             mDrive.drive(value * .45, value * .45);
 
         } else if (onTarget){
-            System.out.println("HOT");
             mDrive.drive(0, 0);
             currentStateIndex += 2;
             setCurrentState(nextStateArray[currentStateIndex]);
@@ -190,22 +193,26 @@ public class AutoStateMachine {
 
     private void shoot(int numCells) {
         boolean doneShooting = false;
-        int count = 0;
+        boolean current = mIntake.getAccPhoto();
 
         if (!doneShooting) {
-            if (!mIntake.getAccPhoto()) {
+            if (mLastShootState != current) {
                 count++;
-                doneShooting = count > numCells;
+                mLastShootState = current;
             }
-            mShooter.BangBangControl(1000);
+            doneShooting = count > numCells;
+            
+            mShooter.BangBangControl(6000);
 
-            if (Math.abs(mShooter.getShooterSpeed() - 1000) < 100) {
+            if (Math.abs(mShooter.getShooterSpeed() - 6000) < 100) {
                 mShooter.controlAcc(1.0);
                 mIntake.conveyorControl(Constants.CONTROL_CONVEYOR_SPEED);
                 mIntake.intakeRawSpeed(Constants.INTAKE_ROLLER_SPEED, Constants.INTAKE_ROLLER_SPEED);
             }
             
         } else if (doneShooting) {
+            count = 0;
+            mLastShootState = true;
             mShooter.stop();
             mShooter.zeroSensors();
             currentStateIndex += 2;
@@ -223,6 +230,12 @@ public class AutoStateMachine {
                 mIntake.backIntake(false);
                 mIntake.intakeRawSpeed(Constants.INTAKE_ROLLER_SPEED, Constants.INTAKE_ROLLER_SPEED);
             }
-        }  
+
+            if (!mIntake.getAccPhoto()) {
+                mIntake.conveyorControl(Constants.CONTROL_CONVEYOR_SPEED);
+            } else {
+                mIntake.conveyorControl(Constants.DEFAULT_CONVEYOR_SPEED);
+            }
+        } 
     }
 }

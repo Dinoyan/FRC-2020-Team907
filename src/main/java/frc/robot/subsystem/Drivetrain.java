@@ -10,12 +10,14 @@ package frc.robot.subsystem;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
-import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
+// import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.kauailabs.navx.frc.AHRS;
 
+import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.SPI;
+import edu.wpi.first.wpilibj.interfaces.Gyro;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
 
@@ -36,10 +38,11 @@ public class Drivetrain extends Subsystem {
     private WPI_TalonFX mRMaster;
     private VictorSPX mRSlave;
 
-    private SupplyCurrentLimitConfiguration currentLimit = new SupplyCurrentLimitConfiguration();
+    // private SupplyCurrentLimitConfiguration currentLimit = new SupplyCurrentLimitConfiguration();
 
     private AHRS navx;
-
+    private Gyro mGyro;
+    
     public static Drivetrain getInstance() {
         if (mInstance == null) {
             mInstance = new Drivetrain();
@@ -85,6 +88,10 @@ public class Drivetrain extends Subsystem {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        mGyro = new ADXRS450_Gyro(SPI.Port.kMXP);
+        // mGyro = new ADXRS450_Gyro();
+        mGyro.calibrate();
     }
 
     @Override
@@ -108,7 +115,7 @@ public class Drivetrain extends Subsystem {
     public void updateDashboard() {
         SmartDashboard.putNumber("Right Pos", getRightDistance());
         SmartDashboard.putNumber("Left Pos", getLeftDistance());
-        SmartDashboard.putNumber("Angle", getAngle());
+        SmartDashboard.putNumber("Angle", mGyro.getRate());
     }
 
     public void drive(double left, double right) {
@@ -161,4 +168,5 @@ public class Drivetrain extends Subsystem {
         mRMaster.setNeutralMode(NeutralMode.Coast);
         mLMaster.setNeutralMode(NeutralMode.Coast);
     }
+ 
 }

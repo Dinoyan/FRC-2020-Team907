@@ -19,7 +19,7 @@ public class Constants {
      // ******************** SHOOTER ************************
      public final static int[] SHOOTER_CAN = {4, 5};
  
-     public final static int[] HOOD_PISTON = {4, 5};
+     public final static int[] HOOD_PISTON = {5, 4};
  
      public final static double DEFAULT_CONVEYOR_SPEED = 0.0;
      public final static double DEFAULT_SHOOTER_SPEED = 0.0;
