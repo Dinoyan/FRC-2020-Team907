@@ -99,6 +99,7 @@ public class ITeleopLooper implements ITeleop {
         }
 
         // mLimelight.setLEDMode(1);
+
     }
 
     @Override
@@ -123,14 +124,12 @@ public class ITeleopLooper implements ITeleop {
             
         } else {
             mIntake.frontIntake(true);
-            mIntake.conveyorControl(Constants.DEFAULT_CONVEYOR_SPEED);
+            // mIntake.conveyorControl(Constants.DEFAULT_CONVEYOR_SPEED);
         }
 
         if (mJoystick.getBackIntake()) {
             mIntake.backIntake(false);
             mIntake.intakeCell(Constants.INTAKE_ROLLER_SPEED);
-            // mIntake.intakeRawSpeed(Constants.INTAKE_IDLE_SPEED, 0.0);
-            // mIntake.conveyorControl(Constants.CONTROL_CONVEYOR_SPEED);
             if (!mIntake.getAccPhoto()) {
                 mIntake.conveyorControl(Constants.CONTROL_CONVEYOR_SPEED);
             } else {
@@ -138,7 +137,7 @@ public class ITeleopLooper implements ITeleop {
             }
         } else {
             mIntake.backIntake(true);
-            mIntake.conveyorControl(Constants.DEFAULT_CONVEYOR_SPEED);
+            // mIntake.conveyorControl(Constants.DEFAULT_CONVEYOR_SPEED);
         }
 
         if (!mJoystick.getBackIntake() && !mJoystick.getFrontIntake()) {
@@ -161,8 +160,9 @@ public class ITeleopLooper implements ITeleop {
         if (shootValue > 0.1) {
             mShooter.controlHood(true);
 
-            mShooter.BangBangControl((6.38 * Math.pow(this.mLimelight.vGetDistance(), 2))
-                    + (148 * this.mLimelight.vGetDistance()) + 2000);
+            // mShooter.BangBangControl((6.38 * Math.pow(this.mLimelight.vGetDistance(), 2))
+                  //   + (148 * this.mLimelight.vGetDistance()) + 2000);
+            mShooter.shootCellOpen(shootValue);
 
             mCompressor.stop();
 
@@ -171,16 +171,16 @@ public class ITeleopLooper implements ITeleop {
                 mIntake.conveyorControl(Constants.CONTROL_CONVEYOR_SPEED);
                 mIntake.intakeRawSpeed(Constants.INTAKE_ROLLER_SPEED, Constants.INTAKE_ROLLER_SPEED);
             }
-
         }
 
         // auto shooter
-        if (mJoystick.getShootBtn()) {
+        if (mJoystick.getShootNow() && (mJoystick.getManuallyShoot() < 0.1)) {
             mCompressor.stop();
             shooterStateController(mShooterState.LIFT_HOOD);
             shooterStateController(mShooterState.WAIT_FOR_VEL);
-
+           
             if (mReadyToShoot) {
+                System.out.print("TESTTT");
                 shooterStateController(mShooterState.SHOOT);
             }
         }
@@ -200,6 +200,7 @@ public class ITeleopLooper implements ITeleop {
             case SHOOT:
                 shooterStateController(mShooterState.MOVE_CONVEYOR);
                 shooterStateController(mShooterState.MOVE_INTAKE);
+                mShooter.controlAcc(1);
                 break;
             case ALIGN:
                 double mCorrection = mLimelight.getX();
@@ -218,9 +219,9 @@ public class ITeleopLooper implements ITeleop {
                 double desiredVel = (6.38 * Math.pow(this.mLimelight.vGetDistance(), 2))
                 + (148 * this.mLimelight.vGetDistance()) + 2000;
                 
-                mShooter.BangBangControl(desiredVel);
+                mShooter.BangBangControl(3000);
                 
-                if (Math.abs(mShooter.getShooterSpeed() - desiredVel) < 100) {
+                if (Math.abs(mShooter.getShooterSpeed() - 3000) < 100) {
                     mReadyToShoot = true;
                 } else {
                     mReadyToShoot = false;
@@ -230,7 +231,7 @@ public class ITeleopLooper implements ITeleop {
                 mIntake.conveyorControl(Constants.CONTROL_CONVEYOR_SPEED);
                 break;
             case MOVE_INTAKE:
-                mIntake.intakeCell(Constants.INTAKE_ROLLER_SPEED);
+                mIntake.intakeRawSpeed(Constants.INTAKE_ROLLER_SPEED, Constants.INTAKE_ROLLER_SPEED);
                 break;
             case LIFT_HOOD:
                 mShooter.controlHood(true);
@@ -247,7 +248,8 @@ public class ITeleopLooper implements ITeleop {
 
     private void hookEnabledLoop() {
         if (teleopTime.get() > 120) {
-             mHook.pullUp(mJoystick.getHookAxis());
+            mCompressor.stop();
+            mHook.pullUp(mJoystick.getHookAxis());
         }
     }
 
