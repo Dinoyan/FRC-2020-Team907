@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import frc.robot.Constants;
 import frc.robot.util.CyberPID;
+import frc.robot.util.ILooperTest;
 
 /**
  * Add your docs here.
@@ -130,4 +131,25 @@ public class CWPanel extends Subsystem {
         }
         return mDColour;
     }
+
+    ILooperTest innerLoop = new ILooperTest(){
+    
+        @Override
+        public void teleopLooper() {
+            // TODO Auto-generated method stub
+            
+        }
+    
+        @Override
+        public void init() {
+            // TODO Auto-generated method stub
+            
+        }
+    
+        @Override
+        public void autoLooper() {
+            // TODO Auto-generated method stub
+            
+        }
+    }; 
 }
