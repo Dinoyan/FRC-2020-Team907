@@ -62,7 +62,6 @@ public class Robot extends TimedRobot {
     mHook = Hook.getInstance();
     mCWPanel = CWPanel.getInstance();
 
-
     mAutoSelector = AutoSelector.getInstance();
     mAutoStateMachine = AutoStateMachine.getInstance();
 
@@ -132,6 +131,7 @@ public class Robot extends TimedRobot {
   public void teleopPeriodic() {
     mTeleopLooper.driveEnabledLoop();
     mTeleopLooper.superstructureEnabledLoop();
+
   }
 
   @Override
@@ -143,5 +143,5 @@ public class Robot extends TimedRobot {
   public void testPeriodic() {
     pdp.clearStickyFaults();
   }
-
+  
 }
