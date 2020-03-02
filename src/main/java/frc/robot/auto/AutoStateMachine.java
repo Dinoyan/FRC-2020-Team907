@@ -7,6 +7,7 @@
 
 package frc.robot.auto;
 
+
 import edu.wpi.first.wpilibj.Timer;
 import frc.robot.Constants;
 import frc.robot.subsystem.Drivetrain;
@@ -39,10 +40,12 @@ public class AutoStateMachine {
     private byte currentStateIndex;
     private byte[] nextStateArray = new byte[255];
 
-    private Timer mTimer = new Timer();
+    private Timer mTimer;
 
-    private boolean mLastShootState = true;
+    private boolean mLastShootState = false;
     private int count = 0;
+
+    boolean doneShooting = false;
 
     // PIDs
     private CyberPID mDrivePID;
@@ -72,6 +75,8 @@ public class AutoStateMachine {
         mDrivePID.setTolerance(1);
         mTurnPID.setTolerance(1);
 
+        mTimer = new Timer();
+
         currentStateIndex = 0;
         setCurrentState(WAIT);
         buildAuto(selection);
@@ -79,9 +84,7 @@ public class AutoStateMachine {
 
     public void buildAuto(byte mode) {
         if (DEFAULT == mode) {
-            byte[] statesOrder = {TURN, (byte) 30, TURN, (byte) -30, DRIVE, (byte) -90, 
-                DRIVE, (byte) 90,  
-                TURN, (byte) 30, WAIT, (byte) 1};
+            byte[] statesOrder = {DRIVE, (byte) 30, SHOOT, (byte) 3, WAIT, (byte) 0};
             fillStateArray(statesOrder);
 
         } else if (MIDDLE_SHOOT == mode) {
@@ -108,15 +111,15 @@ public class AutoStateMachine {
             fillStateArray(statesOrder);
 
         } else if (RIGHT_TRENCH_PICKUP == mode) {
-            byte[] statesOrder = {
-                                    TURN, (byte) 30, 
+            byte[] statesOrder = { 
                                     SHOOT, (byte) 3, 
-                                    TURN, (byte) 0, 
-                                    DRIVE, (byte) 5, 
-                                    DRIVE_AND_INTAKE, (byte) 10,
-                                    TURN, (byte) 20,
-                                    SHOOT, (byte) 3,
-                                };
+                                    TURN, (byte) -34, 
+                                    DRIVE_AND_INTAKE, (byte) -80, 
+                                    WAIT, (byte) 0 };
+                                    // DRIVE, (byte) 90,
+                                //     TURN, (byte) 30,
+                                //     SHOOT, (byte) 3,
+                                // };
             fillStateArray(statesOrder);
         }
         
@@ -135,11 +138,10 @@ public class AutoStateMachine {
 
         if (currentState == DRIVE) {
             drive((double) nextStateArray[currentStateIndex + 1]);
-            // drive(60);
-            mIntake.intakeRawSpeed(0, 0);
         } else if (currentState == TURN) {
             turn((double) nextStateArray[currentStateIndex + 1]);
         } else if (currentState == SHOOT) {
+            mTimer.start();
             shoot((int) nextStateArray[currentState + 1]);
         } else if (currentState == INTAKE) {
             intake((int) nextStateArray[currentState + 1]);
@@ -147,7 +149,9 @@ public class AutoStateMachine {
             intake((int) nextStateArray[currentState + 1]);
             drive((double) nextStateArray[currentStateIndex + 1]);
         } else if(currentState ==  WAIT){
-            
+            mIntake.intakeRawSpeed(0, 0);
+            mIntake.conveyorControl(0);
+            mIntake.backIntake(true);
         }
     }
 
@@ -158,11 +162,11 @@ public class AutoStateMachine {
     private void drive(double distance) {
         mDrivePID.setSetpoint(distance);
         boolean onTarget = mDrivePID.onTarget(mDrive.getRightDistance());
-
+        System.out.print("HEREEEE");
         if (!onTarget) {
             onTarget = mDrivePID.onTarget(mDrive.getRightDistance());
             double value = mDrivePID.getOutput(mDrive.getRightDistance());
-            mDrive.drive(value * .45, value * .45);
+            mDrive.drive(value * 0.4, value * 0.4);
 
         } else if (onTarget){
             mDrive.drive(0, 0);
@@ -176,7 +180,7 @@ public class AutoStateMachine {
     private void turn(double angle) {
         mTurnPID.setSetpoint(angle);
         boolean onTarget = mTurnPID.onTarget(mDrive.getAngle());
-
+        
         if (!onTarget) {
             onTarget = mTurnPID.onTarget(mDrive.getAngle());
             double value = mTurnPID.getOutput(mDrive.getAngle());
@@ -191,44 +195,72 @@ public class AutoStateMachine {
         }
     }
 
-    private void shoot(int numCells) {
-        boolean doneShooting = false;
-        boolean current = mIntake.getAccPhoto();
+    // private void shoot(int numCells) {
+        
+    //     boolean current = mIntake.getAccPhoto();
 
-        if (!doneShooting) {
-            if (mLastShootState != current) {
-                count++;
-                mLastShootState = current;
-            }
-            doneShooting = count > numCells;
+    //     if (!doneShooting) {
+    //         if (mLastShootState != current) {
+    //             System.out.print(count);
+    //             count++;
+    //             mLastShootState = current;
+    //             doneShooting = count > numCells;
+    //         }
+    //         mShooter.BangBangControl(1000);
+
+    //         if (Math.abs(mShooter.getShooterSpeed() - 1000) < 100) {
+    //             mShooter.controlAcc(1.0);
+    //             mIntake.conveyorControl(Constants.CONTROL_CONVEYOR_SPEED);
+    //             mIntake.intakeRawSpeed(Constants.INTAKE_ROLLER_SPEED, Constants.INTAKE_ROLLER_SPEED);
+    //         }
             
-            mShooter.BangBangControl(6000);
+    //     } else if (doneShooting) {
+    //         System.out.print("LALALALA");
+    //         mIntake.intakeRawSpeed(0, 0);
+    //         doneShooting = false;
+    //         count = 0;
+    //         mLastShootState = true;
+    //         mShooter.stop();
+    //         mShooter.zeroSensors();
+    //         currentStateIndex += 2;
+    //         setCurrentState(nextStateArray[currentStateIndex]);
+    //     }
+    // }
 
-            if (Math.abs(mShooter.getShooterSpeed() - 6000) < 100) {
+    private void shoot(int numCells) {
+        
+        if (this.count < 200) {            
+            
+            mShooter.BangBangControl(5000);
+            mShooter.controlHood(true);
+            if (Math.abs(mShooter.getShooterSpeed() - 5000) < 100) {
+                count++;
                 mShooter.controlAcc(1.0);
                 mIntake.conveyorControl(Constants.CONTROL_CONVEYOR_SPEED);
                 mIntake.intakeRawSpeed(Constants.INTAKE_ROLLER_SPEED, Constants.INTAKE_ROLLER_SPEED);
             }
-            
-        } else if (doneShooting) {
-            count = 0;
-            mLastShootState = true;
+
+        } else {
+            mIntake.intakeRawSpeed(0, 0);
+            mShooter.controlAcc(0);
             mShooter.stop();
+            count = 0;
             mShooter.zeroSensors();
             currentStateIndex += 2;
             setCurrentState(nextStateArray[currentStateIndex]);
+            mTimer.stop();
         }
     }
 
     private void intake(int inWay) {
         mTimer.start();
         if (mTimer.get() < 5) {
-            if (inWay == 0) {
+            if (inWay > 0) {
                 mIntake.frontIntake(false);
-                mIntake.intakeRawSpeed(Constants.INTAKE_ROLLER_SPEED, Constants.INTAKE_ROLLER_SPEED);
+                mIntake.intakeRawSpeed(0.5, 0.5);
             } else {
                 mIntake.backIntake(false);
-                mIntake.intakeRawSpeed(Constants.INTAKE_ROLLER_SPEED, Constants.INTAKE_ROLLER_SPEED);
+                mIntake.intakeRawSpeed(0.5, 0.5);
             }
 
             if (!mIntake.getAccPhoto()) {

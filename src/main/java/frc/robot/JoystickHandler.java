@@ -79,4 +79,16 @@ public class JoystickHandler {
     public boolean getShootNow() {
         return mShootStick.getRawButton(4);
     }
+
+    public boolean getEmergencyShoot() {
+        return mShootStick.getRawButton(1);
+    }
+
+    public boolean getDrvieForward() {
+        return mDriveStick.getRawButton(4);
+    }
+
+    public boolean getBackward() {
+        return mDriveStick.getRawButton(1);
+    }
 }

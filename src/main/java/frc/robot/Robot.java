@@ -97,6 +97,7 @@ public class Robot extends TimedRobot {
   @Override
   public void disabledPeriodic() {
     mDrive.switchToCoast();
+    mAutoMode = mAutoSelector.getAutoMode();
   }
 
   @Override

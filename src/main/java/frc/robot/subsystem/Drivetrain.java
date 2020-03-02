@@ -89,7 +89,7 @@ public class Drivetrain extends Subsystem {
             e.printStackTrace();
         }
 
-        mGyro = new ADXRS450_Gyro(SPI.Port.kMXP);
+        mGyro = new ADXRS450_Gyro(SPI.Port.kOnboardCS0);
         // mGyro = new ADXRS450_Gyro();
         mGyro.calibrate();
     }
@@ -99,6 +99,7 @@ public class Drivetrain extends Subsystem {
         mRMaster.setSelectedSensorPosition(0);
         mLMaster.setSelectedSensorPosition(0);
         navx.reset();
+        mGyro.reset();
     }
 
     @Override
@@ -115,7 +116,7 @@ public class Drivetrain extends Subsystem {
     public void updateDashboard() {
         SmartDashboard.putNumber("Right Pos", getRightDistance());
         SmartDashboard.putNumber("Left Pos", getLeftDistance());
-        SmartDashboard.putNumber("Angle", mGyro.getRate());
+        SmartDashboard.putNumber("Angle", mGyro.getAngle());
     }
 
     public void drive(double left, double right) {
@@ -150,8 +151,9 @@ public class Drivetrain extends Subsystem {
 
     public double getAngle() {
         // mAngle = navx.getAngle();
-        mAngle = Math.tanh((this.getLeftDistance() + this.getRightDistance()) / 24.55);
-        mAngle = Math.toDegrees(mAngle);
+        // mAngle = Math.tanh((this.getLeftDistance() + this.getRightDistance()) / 24.55);
+        // mAngle = Math.toDegrees(mAngle);
+        mAngle = mGyro.getAngle();
         return mAngle;
     }
 

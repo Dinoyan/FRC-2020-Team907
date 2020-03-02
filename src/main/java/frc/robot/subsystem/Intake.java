@@ -87,11 +87,11 @@ public class Intake extends Subsystem{
     }
 
     public void intakeRawSpeed(double frontSpeed, double backSpeed) {
-        if (frontSpeed > 0) {
+        if (frontSpeed >= 0) {
             mFrontMotor.set(frontSpeed);
         }
         
-        if (backSpeed > 0) {
+        if (backSpeed >= 0) {
             mBackMotor.set(backSpeed);
         }
     }

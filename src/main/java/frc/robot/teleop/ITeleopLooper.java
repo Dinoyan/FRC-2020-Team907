@@ -42,6 +42,10 @@ public class ITeleopLooper implements ITeleop {
 
     Compressor mCompressor = new Compressor();
 
+    double bottomButtonShootValue;
+    double topButtonShootValue;
+
+
     // aiming constants
     float kP = -0.2f;
     float min_command = 0.09f;
@@ -84,10 +88,20 @@ public class ITeleopLooper implements ITeleop {
         teleopTime.start();
 
         mLimelight.setLEDMode(3);
+
+        this.initValues();
+    }
+
+    private void initValues(){
+        bottomButtonShootValue = Constants.BOTTOM_SHOOTER_PRESET_VELOCITY;
+        topButtonShootValue = Constants.TOP_SHOOTER_PRESET_VELOCITY;
     }
 
     @Override
     public void driveEnabledLoop() {
+        //this.moveBackward();
+        //this.moveForward();
+
         double left = mJoystick.getDriveLeft();
         double right = mJoystick.getDriveRight();
 
@@ -104,10 +118,11 @@ public class ITeleopLooper implements ITeleop {
 
     @Override
     public void superstructureEnabledLoop() {
-        intakeEnabledLoop();
-        shooterEnabledLoop();
-        hookEnabledLoop();
+        this.intakeEnabledLoop();
+        this.shooterEnabledLoop();
+        this.hookEnabledLoop();
         // CWEnabledLoop();
+        // this.onThFlyFixesLoop();
     }
 
     private void intakeEnabledLoop() {
@@ -156,17 +171,30 @@ public class ITeleopLooper implements ITeleop {
     private void shooterEnabledLoop() {
         // manual shooter
         double shootValue = mJoystick.getManuallyShoot();
-
+    
         if (shootValue > 0.1) {
             mShooter.controlHood(true);
 
             // mShooter.BangBangControl((6.38 * Math.pow(this.mLimelight.vGetDistance(), 2))
                   //   + (148 * this.mLimelight.vGetDistance()) + 2000);
-            mShooter.shootCellOpen(shootValue);
+            // mShooter.shootCellOpen(shootValue);
+            mShooter.BangBangControl(7500 * shootValue);
 
             mCompressor.stop();
 
             if (mJoystick.getShootNow()) {
+                mShooter.controlAcc(1.0);
+                mIntake.conveyorControl(Constants.CONTROL_CONVEYOR_SPEED);
+                mIntake.intakeRawSpeed(Constants.INTAKE_ROLLER_SPEED, Constants.INTAKE_ROLLER_SPEED);
+            }
+        }
+
+        if (mJoystick.getEmergencyShoot() && (mJoystick.getManuallyShoot() < 0.1)) {
+            shooterStateController(mShooterState.LIFT_HOOD);
+            mShooter.BangBangControl(bottomButtonShootValue);
+            mCompressor.stop();
+
+            if (Math.abs(mShooter.getShooterSpeed() - bottomButtonShootValue) < 100) {
                 mShooter.controlAcc(1.0);
                 mIntake.conveyorControl(Constants.CONTROL_CONVEYOR_SPEED);
                 mIntake.intakeRawSpeed(Constants.INTAKE_ROLLER_SPEED, Constants.INTAKE_ROLLER_SPEED);
@@ -180,12 +208,11 @@ public class ITeleopLooper implements ITeleop {
             shooterStateController(mShooterState.WAIT_FOR_VEL);
            
             if (mReadyToShoot) {
-                System.out.print("TESTTT");
                 shooterStateController(mShooterState.SHOOT);
             }
         }
 
-        if (!mJoystick.getShootBtn() && (mJoystick.getManuallyShoot() < 0.1)) {
+        if (!mJoystick.getShootBtn() && (mJoystick.getManuallyShoot() < 0.1) && !mJoystick.getEmergencyShoot()) {
             mShooter.shootCellOpen(Constants.DEFAULT_SHOOTER_SPEED);
             mShooter.controlHood(false);
             mCompressor.start();
@@ -193,6 +220,8 @@ public class ITeleopLooper implements ITeleop {
         }
 
         // mLimelight.setLEDMode(1);
+        // boolean keepSpinning = shootValue > 0.1 || (mJoystick.getEmergencyShoot() || mJoystick.getShootNow();
+        // this.keepItSpinning(keepSpinning);
     }
     
     private void shooterStateController(mShooterState state) {
@@ -216,12 +245,12 @@ public class ITeleopLooper implements ITeleop {
                 break;
             case WAIT_FOR_VEL:
                 // mLimelight.setLEDMode(3);
-                double desiredVel = (6.38 * Math.pow(this.mLimelight.vGetDistance(), 2))
-                + (148 * this.mLimelight.vGetDistance()) + 2000;
+                // double desiredVel = (6.38 * Math.pow(this.mLimelight.vGetDistance(), 2))
+                // + (148 * this.mLimelight.vGetDistance()) + 2000;
                 
-                mShooter.BangBangControl(3000);
+                mShooter.BangBangControl(topButtonShootValue);
                 
-                if (Math.abs(mShooter.getShooterSpeed() - 3000) < 100) {
+                if (Math.abs(mShooter.getShooterSpeed() - topButtonShootValue) < 100) {
                     mReadyToShoot = true;
                 } else {
                     mReadyToShoot = false;
@@ -247,10 +276,10 @@ public class ITeleopLooper implements ITeleop {
     }
 
     private void hookEnabledLoop() {
-        if (teleopTime.get() > 120) {
-            mCompressor.stop();
-            mHook.pullUp(mJoystick.getHookAxis());
-        }
+       // mCompressor.stop();
+        // mHook.adust(mJoystick.getHookAxis());
+        // mHook.pullUp(mJoystick.gw);
+        
     }
 
     private void CWEnabledLoop() {
@@ -274,6 +303,83 @@ public class ITeleopLooper implements ITeleop {
                     mCWButtonPressed = false;
                 }
             }
+        }
+    }
+
+    private void onThFlyFixesLoop(){
+        // initalize the rquired buttons
+        boolean initButton = mJoystick.getDriveStick().getRawButton(Constants.DEV_INIT);
+
+        double increaseAxis = mJoystick.getShootStick().getRawAxis(3);
+        double decreaseAxis = mJoystick.getShootStick().getRawAxis(2);
+
+        boolean increaseCond = (increaseAxis > 0.1) && (decreaseAxis < 0.1);
+        boolean decreaseCond = (decreaseAxis > 0.1) && (increaseAxis < 0.1);
+
+        boolean bottomButton = mJoystick.getEmergencyShoot();
+        boolean topButton = mJoystick.getShootNow();
+
+        boolean bottomPressed = false;
+        boolean topPressed = false;
+
+        if(increaseAxis < 0.1 && decreaseAxis < 0.1){
+            bottomPressed = false;
+            topPressed = false;
+        }
+
+        // Logic to use the dev mode
+        if(initButton && bottomButton && !bottomPressed){
+            if(increaseCond){
+                bottomPressed = true;
+                bottomButtonShootValue += Constants.DEV_SHOOT_EDIT_VALUE;
+            } 
+
+            if(decreaseCond){
+                bottomPressed = true;
+                bottomButtonShootValue -= Constants.DEV_SHOOT_EDIT_VALUE;
+            }
+        }
+
+        if (initButton && topButton && !topPressed){
+            if(increaseCond){
+                topPressed = true;
+                topButtonShootValue += Constants.DEV_SHOOT_EDIT_VALUE;
+            }
+            
+            if(decreaseCond){
+                topPressed = true;
+                topButtonShootValue -= Constants.DEV_SHOOT_EDIT_VALUE;
+            }
+        }
+        
+    }
+
+    private void keepItSpinning(Boolean input){
+        double count = 0;
+
+        if(input){
+            count=0;
+        } 
+
+        if(count > 125 && count < 150){
+            shooterStateController(mShooterState.WAIT_FOR_VEL);
+        }
+        
+        count += 0.5;
+    }
+
+    public void moveForward(){
+        if (mJoystick.getDrvieForward()) {
+            mDrive.drive(0.16, 0.16);
+        } else {
+            mDrive.drive(0, 0);
+        }
+    }
+    public void moveBackward(){
+        if (mJoystick.getDrvieForward()) {
+            mDrive.drive(-0.16, -0.16);
+        } else {
+            mDrive.drive(0, 0);
         }
     }
 

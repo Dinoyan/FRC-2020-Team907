@@ -7,8 +7,11 @@
 
 package frc.robot.subsystem;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 
+import edu.wpi.first.wpilibj.VictorSP;
 import frc.robot.Constants;
 
 /**
@@ -18,7 +21,9 @@ public class Hook extends Subsystem {
 
     private static Hook mInstance = null;
 
-    WPI_VictorSPX mHookMotor;
+    VictorSP mHookMotor;
+    //VictorSPX mWnchMotor;
+
 
     public static Hook getInstance() {
         if (mInstance == null) {
@@ -29,8 +34,8 @@ public class Hook extends Subsystem {
 
     @Override
     public void init() {
-        mHookMotor = new WPI_VictorSPX(Constants.HOOK_CAN);
-        mHookMotor.configFactoryDefault();
+        mHookMotor = new VictorSP(8);
+        //mWnchMotor = new VictorSPX(9);
     }
 
     @Override
@@ -40,7 +45,6 @@ public class Hook extends Subsystem {
 
     @Override
     public void stop() {
-        mHookMotor.stopMotor();
     }
 
     @Override
@@ -53,12 +57,17 @@ public class Hook extends Subsystem {
 
     }
 
-    public void pullUp(double speed) {
+    public void adust(double speed) {
         mHookMotor.set(speed);
+        
+    }
+
+    public void pullUp(double speed){
+       // mWnchMotor.set(ControlMode.PercentOutput, speed);
     }
 
     public void releaseDown(double speed) {
-        mHookMotor.set(-speed);
+        mHookMotor.set(speed);
     }
 
     public void lock() {

@@ -27,6 +27,9 @@ public class Constants {
      public final static double CONTROL_CONVEYOR_SPEED = 1.0;
  
      public final static int ACC_CAN = 7;
+
+     public final static int BOTTOM_SHOOTER_PRESET_VELOCITY = 4800;
+     public final static int TOP_SHOOTER_PRESET_VELOCITY = 5000;
  
      // ******************* CW PANEL ************************
      public final static int CW_CAN = 9;
@@ -38,7 +41,7 @@ public class Constants {
  
      public final static int CONVEYOR_MOTOR = 6;
  
-     public final static double INTAKE_ROLLER_SPEED = 0.75;
+     public final static double INTAKE_ROLLER_SPEED = 0.85;
      public final static double INTAKE_IDLE_SPEED = 0.75;
      public final static double VOMIT_SPEED = -0.5;
 
@@ -63,15 +66,18 @@ public class Constants {
      public final static int SHOOT_MANUALLY_AXIS = 3;
      public final static int AUTO_ALIGN = 6;
  
-     public final static int CLIMB_AXIS = 2;
+     public final static int CLIMB_AXIS = 1;
+
+     public final static int DEV_INIT = 6;
  
      // ********************* PID ***************************
-     public final static double[] DRIVE_PID  = {0.2, 0.01, 0.05};
-     public final static double[] TURN_PID = {0.1, 0.0, 0.02};
+     public final static double[] DRIVE_PID  = {0.12, 0.01, 0.012};
+     public final static double[] TURN_PID = {0.1, 0.0, 0.0};
      public final static double[] CW_PID = {0.1, 0.1, 0.1};
      public final static double[] SHOOTER_PID = {0.1, 0.1, 0.1};
  
      // ********************* MISC ***************************
      public final static int AUTO_TIME = 15;
+     public final static int DEV_SHOOT_EDIT_VALUE = 100;
 
 }
